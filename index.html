@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/login.css">
+    <title>Latinadd - La red social de los latinos</title>
+</head>
+<body>
+    <div class="fondo">
+        <div class="container-fluid pb-5">
+            <div class="row justify-content-center pt-5">
+                <div class="col-3">
+                    <img src="img/icono-tras.png" alt="">
+                </div>
+            </div>
+            <div class="row pt-3">
+                <span class="tituloCargador">LATINADD</span>
+            </div>
+            <div class="row justify-content-center mt-4">
+                <div class="col-5 btnEntrar">Entrar</div>
+                <div class="col-5 btnRegistrar">Registrar</div>
+            </div>
+            <div class="bloqueLogin">
+                <div class="container bloqueEntrar pt-3 pb-3">
+                    <div class="row mb-5">
+                        <span class="titularLogin">Iniciar sesión</span>
+                    </div>
+                    <div class="row">
+                        <input type="text" class="inputForm" id="correoLogin" placeholder="Correo electrónico" autocomplete="new-password">
+                    </div>
+                    <div class="row">
+                        <input type="password" class="inputForm" id="passLogin" placeholder="Contraseña" autocomplete="new-password">
+                    </div>
+                    <div class="row mt-2">
+                        <span class="avisoPass">¿Contraseña perdida?</span>
+                    </div>
+                    <div class="row filaError">
+                        <span class="msnError">El correo y/o la contraseña son incorrectas</span>
+                    </div>
+                    <div class="row mt-3 justify-content-center">
+                        <button class="btnLogin" id="btnLogin">Entrar</button>
+                    </div>
+                </div>
+                <div class="container bloqueRegistrar pt-3 pb-3">
+                    <div class="row mb-5">
+                        <span class="titularLogin">Nuevo usuario</span>
+                    </div>
+                    <div class="row">
+                        <input type="text" class="inputForm" id="nombreRegistro" placeholder="Nombre" autocomplete="new-password">
+                    </div>
+                    <div class="row">
+                        <input type="text" class="inputForm" id="apellidoRegistro" placeholder="Apellidos" autocomplete="new-password">
+                    </div>
+                    <div class="row">
+                        <input type="text" class="inputForm" id="correoRegistro" placeholder="Correo electrónico" autocomplete="new-password">
+                    </div>
+                    <div class="row">
+                        <input type="password" class="inputForm" id="passregistro" placeholder="Contraseña" autocomplete="new-password">
+                    </div>
+                    <div class="row">
+                        <input type="password" class="inputForm" id="pass2Registro" placeholder="Repetir contraseña" autocomplete="new-password">
+                    </div>
+                    <div class="row filaError">
+                        <span class="msnError" id="msnError">El correo y/o la contraseña son incorrectas</span>
+                    </div>
+                    <div class="row mt-3 justify-content-center">
+                        <button class="btnLogin" id="btnNuevo">Registrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            $(".bloqueRegistrar").hide();
+            $(".msnError").hide();
+
+            if ((localStorage.getItem("idUsuario") != null) && (localStorage.getItem("tokenUsuario") != "")) {
+                fetch('API/usuarios/comprobarLocal.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        idUsuario: localStorage.getItem("idUsuario"),
+                        tokenUsuario: localStorage.getItem("tokenUsuario")
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = 'novedades.html';
+                    } else {
+                        localStorage.removeItem("idUsuario");
+                        localStorage.removeItem("tokenUsuario");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    localStorage.removeItem("idUsuario");
+                    localStorage.removeItem("tokenUsuario");
+                });
+            }
+
+            $("#btnLogin").click(function(){
+                var correo = $("#correoLogin").val();
+                var pass = $("#passLogin").val();
+                if(correo == "" || pass == ""){
+                    $(".msnError").show();
+                }else{
+                    $(".msnError").hide();
+                    fetch('API/usuarios/login.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: new URLSearchParams({
+                            'correo': correo,
+                            'password': pass
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            localStorage.setItem("idUsuario", data.id);
+                            localStorage.setItem("tokenUsuario", data.token);
+                            window.location.href = 'novedades.html';
+                        } else {
+                            $(".msnError").text(data.mensaje);
+                            $(".msnError").show();
+                        }
+                    })
+                    .catch(error => {
+                        $(".msnError").text("Error al cargar los datos");
+                        $(".msnError").show();
+                    });
+                }
+            });
+
+            $("#btnNuevo").click(function () {
+                var nombre = $("#nombreRegistro").val().trim();
+                var apellido = $("#apellidoRegistro").val().trim();
+                var correo = $("#correoRegistro").val().trim();
+                var pass = $("#passregistro").val().trim();
+                var pass2 = $("#pass2Registro").val().trim();
+
+                var $msnError = $("#msnError");
+
+                if (nombre === "" || apellido === "" || correo === "" || pass === "" || pass2 === "") {
+                    $msnError.text("Todos los campos son obligatorios.");
+                    $msnError.show();
+                    return;
+                }
+
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(correo)) {
+                    $msnError.text("El correo electrónico no tiene un formato válido.");
+                    $msnError.show();
+                    return;
+                }
+
+                if (pass !== pass2) {
+                    $msnError.text("Las contraseñas no coinciden.");
+                    $msnError.show();
+                    return;
+                }
+
+                if (pass.length < 6) {
+                    $msnError.text("La contraseña debe tener al menos 6 caracteres.");
+                    $msnError.show();
+                    return;
+                }
+
+                $msnError.hide();
+
+                fetch('API/usuarios/registro.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        'nombre': nombre,
+                        'apellidos': apellido,
+                        'correo': correo,
+                        'password': pass
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        localStorage.setItem("idUsuario", data.id);
+                        localStorage.setItem("tokenUsuario", data.token);
+                        window.location.href = 'guia.html';
+                    } else {
+                        $(".msnError").text(data.mensaje);
+                        $(".msnError").show();
+                    }
+                })
+                .catch(error => {
+                    $(".msnError").text("Hay un error con los datos");
+                    $(".msnError").show();
+                });
+            });
+
+            $(".btnRegistrar").click(function(){
+                $(".btnEntrar").css("background-color", "transparent");
+                $(".btnEntrar").css("color", "white");
+                $(".btnRegistrar").css("background-color", "white");
+                $(".btnRegistrar").css("color", "#2c3e50");
+                $(".bloqueEntrar").hide();
+                $(".bloqueRegistrar").show();
+            });
+
+            $(".btnEntrar").click(function(){
+                $(".btnRegistrar").css("background-color", "transparent");
+                $(".btnRegistrar").css("color", "white");
+                $(".btnEntrar").css("background-color", "white");
+                $(".btnEntrar").css("color", "#2c3e50");
+                $(".bloqueRegistrar").hide();
+                $(".bloqueEntrar").show();
+            });
+        });
+    </script>
+</body>
+</html>

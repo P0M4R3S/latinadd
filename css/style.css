@@ -1,0 +1,524 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
+
+
+
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    line-height: 1.6;
+    background-color: var(--background-color);
+}
+
+ul, ol {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+/* Defining colors */
+:root {
+    --primary-color: #615DFA;
+    --secondary-color: #4E4AC8;
+    --accent-color: #e74c3c;
+    --background-color: #F4F3F8;
+    --text-color: #2c3e50;
+}
+
+
+/*  Navegador superior---------------------------------*/
+.navegador{
+    background-color: var(--primary-color);
+    height: 65px;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.logo {
+    height: 100%;
+}
+
+.logo img {
+    height: 80%;
+    width: auto;
+}
+
+.sandwich{
+    height: 100%;
+}
+
+.sandwich img{
+    height: 40%;
+    width: auto;
+}
+
+.buscador{
+    background-color: var(--secondary-color);
+}
+
+.buscador-form{
+    all: unset;
+    color: var(--primary-color);
+}
+
+.lupa{
+    background-color: var(--secondary-color);
+}
+
+.lupa img{
+    height: 50%;
+    width: auto;
+}
+
+
+/** Navegador inferior---------------------------------*/
+.subMenu{
+    background-color: var(--primary-color);
+    height: 65px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    text-align: center;
+}
+
+.bntSub svg{
+    width: 22px;
+    height: auto;
+}
+
+
+/** Cargador------------------------------------------------*/
+.cargador{
+    width: 100%;
+    height: 100vh;
+    background-color: var(--text-color);
+    position: absolute;
+    top:0;
+    left: 0;
+    z-index: 2001;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cargCentral{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.imgCargador{
+    background-color: var(--secondary-color);
+    width: 35%;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.tituloCargador{
+    color: white;
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 24px;
+}
+
+.subtituloCargador{
+    color: white;
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 10px;
+    margin-bottom: 30px;
+}
+
+@keyframes loading {
+    0% {
+      transform: rotate(0deg);
+    }
+  
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .sprin {
+    border: 6px dotted var(--primary-color);
+    border-radius: 100%;
+    width: 50px;
+    height: 50px;
+    animation: loading 2s infinite linear;
+  }
+
+  /**Menu lateral------------------------*/
+  .menuLateral{
+    position: fixed;
+    top:0;
+    left: 0;
+    width: 100%;
+    height: 110vh;
+    background-color: var(--text-color);
+    z-index: 1001;
+    display: none;
+  }
+
+  .lateral{
+    width: 85%;
+    background-color: white;
+    position: absolute;
+    top:0;
+    left: -250;
+    padding-left: 20px;
+    height: 110vh;
+  }
+
+.flecha{
+    justify-content: right;
+    padding-right: 30px;
+}
+
+.flecha img{
+    width: 50px;
+    height: auto;
+}
+
+.perfilLateral{
+    padding: 10px;
+}
+
+.imgLateral{
+    border-radius: 10px;
+    border: 3px solid var(--primary-color);
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.nombreLateral{
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--text-color);
+}
+
+.bienvenidaLateral{
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--text-color);
+}
+
+.btnCerrar{
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 8px;
+    margin-top: 10px;
+    margin-left: 20px;
+    width: 40%;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.tituloLateral{
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--text-color);
+    margin-top: 20px;
+}
+
+
+/**Contenido---------------------------------*/
+.principal{
+    width: 100%;
+    padding: 15px 5px;
+}
+
+.post{
+    background-color: white;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 2px rgba(209, 196, 196, 0.1);
+    padding: 10px;
+}
+
+.perfilPost{
+    border-bottom: 1px solid var(--background-color);
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+}
+
+.imgPost{
+    border-radius: 10px;
+    border:2px solid var(--primary-color);
+}
+
+.nombrePost{
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--text-color);
+}
+
+
+.textareaPost{
+    width: 100%;
+    height: 100px;
+    border-radius: 10px;
+    border: none;
+    resize: none;
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--text-color);
+}
+
+.textareaPost:focus {
+    outline: none;
+}
+
+.btnPost{
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 12px;
+    margin-top: 10px;
+    width: 30%;
+    text-align: center;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.tiempoPost{
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 10px;
+    color: grey;
+    margin-top: 10px;
+}
+
+.textoPost{
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--text-color);
+    margin-top: 10px;
+    margin: 15px 10px;
+    max-width: 100%; /* Ensure the text does not overflow the container */
+    overflow: hidden; /* Hide any overflowing text */
+    display: -webkit-box; /* Use WebKit box model */
+    -webkit-line-clamp: 6; /* Limit text to 8 lines */
+    -webkit-box-orient: vertical; /* Set box orientation to vertical */
+}
+
+/*Visor*****************************************/
+.visor{
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 100%;
+    min-height: 100vh;
+    background-color: white;
+    padding-top: 10px;
+}
+
+.textoVisor{
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--text-color);
+    margin-top: 10px;
+    margin: 15px 10px;
+    max-width: 100%;
+}
+
+.globoComentario{
+    background-color: rgb(237, 233, 248);
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.nombreComentario{
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--text-color);
+}
+
+.textoComentario{
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--text-color);
+    margin-top: 10px;
+    margin: 15px 10px;
+    max-width: 100%;
+}
+
+.minitexto{
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 9px;
+    color: grey;
+    margin-top: 10px;
+}
+
+/*visor de perfiles*********************************/
+.fondoPerfil{
+    background-color: var(--background-color);
+}
+
+.bannerSuperior{
+    border-radius: 10px 10px 0px 0px;
+    height: 70px;
+    background-image: url(../img/fondo.jpg);
+}
+
+.bannerSuperior img{
+    border: 8px solid white;
+    border-radius: 10px;
+}
+
+.nombrePerfil{
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 14px;
+    color: var(--text-color);
+    margin-top: 120px;
+    text-align: center;
+}
+
+.btnAmigo{
+    background-color: var(--primary-color);
+    color: white;
+    padding: 18px;
+    border-radius: 10px;
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 12px;
+    margin-top: 10px;
+    width: 30%;
+    text-align: center;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btnMensaje{
+    background-color: #00cef3;
+    color: white;
+    padding: 18px;
+    border-radius: 10px;
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 12px;
+    margin-top: 10px;
+    width: 30%;
+    text-align: center;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.textoTitulo{
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--text-color);
+    margin-top: 10px;
+    margin: 15px 10px;
+    max-width: 100%;
+}
+
+.textoDescripcionPersonal{
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--text-color);
+    margin-top: 10px;
+    max-width: 100%;
+}
+
+.espacioNeg{
+    margin-right: -20px;
+}
+
+#previewContainer {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.previewImg {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+

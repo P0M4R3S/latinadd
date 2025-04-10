@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/guia.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latinadd - La red social de los latinos</title>
+</head>
+<body>
+    <div class="container-fluid guia">
+        <div class="bloque" id="bloque1">
+            <div class="row pt-5 justify-content-end">
+                <div class="col-5 creador">
+                    <img src="img/creador.png" alt="">
+                </div>
+                <div class="row pt-5 mb-4">
+                    <span id="texto1" class="texto"></span>
+                    <span id="texto2" class="texto pt-3"></span>
+                </div>
+                <div class="row mt-5 justify-content-center">
+                    <button id="btnComenzar" class="btnComenzar">Comenzar</button>
+                </div>
+            </div>
+        </div>
+        <div class="bloque" id="bloque2">
+            <div class="row pt-5 justify-content-end">
+                <div class="col-5 creador">
+                    <img src="img/creador.png" alt="">
+                </div>
+                <div class="row pt-5 mb-4">
+                    <span id="texto3" class="texto"></span>
+                    <select id="selPais" class="selPais">
+                        <option value="default" disabled selected>Selecciona tu país</option>
+                        <option data-flag="img/banderas/ar.png" value="ar">Argentina</option>
+                        <option data-flag="img/banderas/bo.png" value="bo">Bolivia</option>
+                        <option data-flag="img/banderas/br.png" value="br">Brasil</option>
+                        <option data-flag="img/banderas/ca.png" value="ca">Canadá</option>
+                        <option data-flag="img/banderas/cl.png" value="cl">Chile</option>
+                        <option data-flag="img/banderas/co.png" value="co">Colombia</option>
+                        <option data-flag="img/banderas/cr.png" value="cr">Costa Rica</option>
+                        <option data-flag="img/banderas/cu.png" value="cu">Cuba</option>
+                        <option data-flag="img/banderas/do.png" value="do">República Dominicana</option>
+                        <option data-flag="img/banderas/ec.png" value="ec">Ecuador</option>
+                        <option data-flag="img/banderas/es.png" value="es">España</option>
+                        <option data-flag="img/banderas/gt.png" value="gt">Guatemala</option>
+                        <option data-flag="img/banderas/hn.png" value="hn">Honduras</option>
+                        <option data-flag="img/banderas/it.png" value="it">Italia</option>
+                        <option data-flag="img/banderas/jm.png" value="jm">Jamaica</option>
+                        <option data-flag="img/banderas/mx.png" value="mx">México</option>
+                        <option data-flag="img/banderas/ni.png" value="ni">Nicaragua</option>
+                        <option data-flag="img/banderas/pa.png" value="pa">Panamá</option>
+                        <option data-flag="img/banderas/pe.png" value="pe">Perú</option>
+                        <option data-flag="img/banderas/pt.png" value="pt">Portugal</option>
+                        <option data-flag="img/banderas/py.png" value="py">Paraguay</option>
+                        <option data-flag="img/banderas/sv.png" value="sv">El Salvador</option>
+                        <option data-flag="img/banderas/tt.png" value="tt">Trinidad y Tobago</option>
+                        <option data-flag="img/banderas/us.png" value="us">Estados Unidos</option>
+                        <option data-flag="img/banderas/uy.png" value="uy">Uruguay</option>
+                        <option data-flag="img/banderas/ve.png" value="ve">Venezuela</option>
+                    </select>                    
+                </div>
+                <div class="row pt-2">
+                    <span class="texto" id="texto4"></span>
+                    <input type="date" class="selPais" id="fecha" name="birthdate" max="2007-12-31" required>
+                </div>
+                <div class="row mt-5 justify-content-center">
+                    <button id="btnPais" class="btnComenzar">Continuar</button>
+                </div>
+            </div>
+        </div>
+        <div class="bloque" id="bloque3">
+            <div class="row pt-5 justify-content-end">
+                <div class="col-5 creador">
+                    <img src="img/creador.png" alt="">
+                </div>
+                <div class="row pt-5 mb-2">
+                    <span id="texto5" class="texto"></span>
+                    <div class="imagen" id="imagen">
+                        <img src="" id="imgRecortada" alt="">
+                    </div>
+                    <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                    <button id="btnImagen" class="btnComenzar">Seleccionar imagen</button>
+                    <div id="cropContainer" style="display: none;">
+                        <img id="imageToCrop" style="max-width: 100%;">
+                        <button id="btnCrop" class="btn btn-lg btn-warning">Recortar</button>
+                    </div>
+                </div>
+                <div class="row justify-content-center d-flex">
+                    <button id="btnFin" class="btnComenzar">Finalizar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typewriter-effect/dist/core.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#btnComenzar").hide();
+            $("#btnPais").hide();
+            $("#selPais").hide();
+            $("#fecha").hide();
+            $("#bloque2").hide();
+            $("#bloque3").hide();
+            $("#btnFin").hide();
+            $("#btnImagen").hide();
+            // Configuración del primer texto
+            const typewriter1 = new Typewriter('#texto1', {
+                loop: false,
+                delay: 50,
+            });
+            
+
+            typewriter1
+                .typeString('¡Bienvenido/a!')
+                .pauseFor(500)
+                .start()
+                .callFunction(() => {
+                    // Una vez termina el primer texto, inicia el segundo
+                    const typewriter2 = new Typewriter('#texto2', {
+                        loop: false,
+                        delay: 50,
+                    });
+
+                    typewriter2
+                        .typeString('Soy El Creador, tu primer amigo en Latinadd. Cuéntame algo de ti para romper el hielo.')
+                        .start()
+                        .callFunction(() => {
+                            // Una vez termina el segundo texto, muestra el botón
+                            $("#btnComenzar").show();
+                        });
+            });
+
+            $("#btnComenzar").click(function () {
+                $("#bloque1").hide();
+                $("#bloque2").fadeIn(200);
+                const typewriter3 = new Typewriter('#texto3', {
+                    loop: false,
+                    delay: 50,
+                });
+                typewriter3
+                    .typeString('¿Qué país te representa?')
+                    .start()
+                    .callFunction(() => {
+                            // Una vez termina el segundo texto, muestra el botón
+                            $("#selPais").show();
+                        });
+            });
+
+            $("#selPais").change(function () {
+                const typewriter4 = new Typewriter('#texto4', {
+                    loop: false,
+                    delay: 50,
+                });
+                typewriter4
+                    .typeString('¿Cual es tu fecha de nacimiento?')
+                    .start()
+                    .callFunction(() => {
+                            // Una vez termina el segundo texto, muestra el botón
+                            $("#fecha").show();
+                        });
+            });
+
+            $("#fecha").change(function () {
+                $("#btnPais").show();
+            });
+
+            $("#btnPais").click(function () {
+                $("#bloque2").hide();
+                $("#bloque3").fadeIn(200);
+                const typewriter5 = new Typewriter('#texto5', {
+                    loop: false,
+                    delay: 50,
+                });
+                typewriter5
+                    .typeString('Solo me falta conocer tu imagen')
+                    .start()
+                    .callFunction(() => {
+                            // Una vez termina el segundo texto, muestra el botón
+                            $("#imagen").show();
+                            $("#btnImagen").show();
+                        });
+            });
+
+
+            $("#btnImagen").click(function () {
+                $("#imageUpload").click();
+            });
+
+            // Cargar imagen en el Cropper
+            $("#imageUpload").change(function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        $("#imageToCrop").attr("src", event.target.result);
+                        $("#cropContainer").show();
+                        $("#imagen").hide();
+                        $("#btnFin").show();
+
+                        // Iniciar Cropper.js
+                        cropper = new Cropper(document.getElementById("imageToCrop"), {
+                            aspectRatio: 1, // cuadrado
+                            viewMode: 1,
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Recortar imagen y mostrarla en el div
+            $("#btnCrop").click(function () {
+                const canvas = cropper.getCroppedCanvas();
+                const croppedImage = canvas.toDataURL("image/png");
+
+                $("#imgRecortada").attr("src", croppedImage);
+                $("#imagen").show();
+                $("#cropContainer").hide();
+
+                cropper.destroy(); // Destruir instancia de Cropper.js
+
+            });
+
+            $("#btnFin").click(function () {
+    const id = localStorage.getItem("idUsuario");
+    const token = localStorage.getItem("tokenUsuario");
+    const pais = $("#selPais").val();
+    const fecha = $("#fecha").val();
+    const imgBase64 = $("#imgRecortada").attr("src");
+
+    if (!id || !token || !pais || !fecha || !imgBase64) {
+        alert("Faltan datos.");
+        return;
+    }
+
+    // Convertimos base64 a Blob
+    function base64ToBlob(base64, type = 'image/png') {
+        const byteCharacters = atob(base64.split(',')[1]);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], { type });
+    }
+
+    const fotoBlob = base64ToBlob(imgBase64);
+    const formData = new FormData();
+    formData.append("id", id);
+    formData.append("token", token);
+    formData.append("pais", pais);
+    formData.append("fecha", fecha);
+    formData.append("ciudad", ""); // De momento ciudad vacía
+    formData.append("foto", fotoBlob, "foto.png");
+
+    fetch("API/usuarios/registroGuia.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = "novedades.html";
+        } else {
+            alert("Error: " + data.mensaje);
+        }
+    })
+    .catch(err => {
+        console.error("Error al enviar guía:", err);
+        alert("Error inesperado al finalizar la guía.");
+    });
+});
+
+
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+
+body {
+    line-height: 1.6;
+    background-color: var(--background-color);
+}
+
+ul, ol {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+/* Defining colors */
+:root {
+    --primary-color: #615DFA;
+    --secondary-color: #4E4AC8;
+    --accent-color: #e74c3c;
+    --background-color: #F4F3F8;
+    --text-color: #2c3e50;
+}
+
+body{
+    background-color: var(--background-color);
+}
+
+.buscador{
+    background-color: lightgrey;
+    padding: 40px;
+    border:1px solid black;
+}
+
