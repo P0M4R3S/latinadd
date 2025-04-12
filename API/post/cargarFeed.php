@@ -109,6 +109,39 @@ foreach ($posts as &$post) {
     }
 }
 
+// Cargar posts que el usuario ha dado like
+$likesUsuario = [];
+
+if (!empty($post_ids)) {
+    $placeholders = implode(',', array_fill(0, count($post_ids), '?'));
+    $types = str_repeat('i', count($post_ids));
+    $params = array_merge([$types], $post_ids);
+    $sql = "SELECT post FROM likespost WHERE usuario = ? AND post IN ($placeholders)";
+    $stmt = $conn->prepare($sql);
+
+    // Construcción dinámica de bind_param
+    $stmt->bind_param(str_repeat('i', count($post_ids) + 1), $id, ...$post_ids);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    while ($like = $result->fetch_assoc()) {
+        $likesUsuario[] = $like['post'];
+    }
+    $stmt->close();
+}
+
+// Agregar imágenes, datos compartidos y liked
+foreach ($posts as &$post) {
+    $post['imagenes'] = $imagenesPorPost[$post['id']] ?? [];
+    $post['liked'] = in_array($post['id'], $likesUsuario);
+    if ($post['tipo'] == 3 && isset($compartidos[$post['idcompartido']])) {
+        $post['compartido'] = $compartidos[$post['idcompartido']];
+    } else {
+        $post['compartido'] = null;
+    }
+}
+
+
 echo json_encode([
     'success' => true,
     'posts' => $posts

@@ -1,6 +1,6 @@
 
 
-function cargarPerfil(){
+function cargarPerfil(callback){
     let id = localStorage.getItem("idUsuario");
     let token = localStorage.getItem("tokenUsuario");
 
@@ -25,8 +25,8 @@ function cargarPerfil(){
                 $("#imgLateral").attr("src", data.foto);
                 $(".nombrePost").text(data.nombre + " " + data.apellidos);
                 $(".imgPost").attr("src", data.foto);
+                if (callback) callback();
                 console.log("Perfil cargado:", data);
-                cargarFeed();
             } else {
                 console.warn("No se pudo cargar el perfil:", data.mensaje);
             }

@@ -152,45 +152,8 @@
         
     </div>
 
-    <!--Cargador------------------------------------------------------------------>
-    <div class="cargador">
-        <div class="cargCentral">
-            <div class="imgCargador"><img src="img/icono-tras.png" alt=""></div>
-            <span class="tituloCargador">LATINADD</span>
-            <span class="subtituloCargador">CARGANDO...</span>
-            <div class="sprin"></div>
-        </div>
-    </div>
-
     <!--Contenido------------------------------------------------------------------->
     <div class="principal">
-        <!--Creador de nuevo post ---------------------------------------->
-        <div class="container-fluid post">
-                <div class="row perfilPost">
-                    <div class="col-2">
-                        <img class="imgPost" src="img/3.jpg" alt="">
-                    </div>
-                    <div class="col-10">
-                        <span class="nombrePost">Nombre de usuario</span>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <textarea class="textareaPost" rows="4"></textarea>
-                    </div>
-                </div>
-                <div class="row">
-                    <div id="previewContainer"></div>
-                    <div class="col-2 align-items-center d-flex btnImagen">
-                        <svg fill="lightgrey" viewBox="0 0 512 512"><path d="M0 96C0 60.7 28.7 32 64 32l384 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM323.8 202.5c-4.5-6.6-11.9-10.5-19.8-10.5s-15.4 3.9-19.8 10.5l-87 127.6L170.7 297c-4.6-5.7-11.5-9-18.7-9s-14.2 3.3-18.7 9l-64 80c-5.8 7.2-6.9 17.1-2.9 25.4s12.4 13.6 21.6 13.6l96 0 32 0 208 0c8.9 0 17.1-4.9 21.2-12.8s3.6-17.4-1.4-24.7l-120-176zM112 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/></svg>
-                    </div>
-                    <input type="file" id="imageInput" style="display: none;" accept="image/*" multiple>
-                    <div class="col-10 justify-content-end d-flex">
-                        <div class="btnPost">Publicar</div>
-                    </div>
-                </div>
-        </div>
-
         <!--Aqui va el feed-------------------------------------------------------->
         <div class="container-fluid contenido">
             
@@ -203,7 +166,7 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/cargarPerfil.js"></script>
     <script src="js/feed.js"></script>
-    <script src="js/visorPosts.js"></script>
+    <script src="js/visorPost.js"></script>
 
     <script>
         $(document).ready(function(){
@@ -227,7 +190,7 @@
                             localStorage.removeItem("tokenUsuario");
                             window.location.href = 'index.html';
                         }else{
-                            cargarPerfil();
+                            cargarPerfil(() => cargarPost(idPost));
                         }
                     },
                     error: function(xhr, status, error) {
@@ -240,10 +203,6 @@
             } else {
                 window.location.href = 'index.html';
             }
-
-            setTimeout(function() {
-                $(".cargador").fadeOut(300);
-            }, 1000);
 
             $(".sandwich").click(function() {
                 $(".menuLateral").fadeIn(200);
@@ -268,30 +227,7 @@
             $(".privacidad").click(function() { window.location.href = "privacidad.html"; });
             $(".notificaciones").click(function() { window.location.href = "notificaciones.html"; });
 
-            $(".btnImagen").click(function() {
-                $("#imageInput").click();
-            });
-
-            $("#imageInput").on("change", function (event) {
-                const files = event.target.files;
-                const previewContainer = $("#previewContainer");
-                previewContainer.empty();
-
-                if (files.length > 0) {
-                    Array.from(files).forEach((file, index) => {
-                        if (file.type.startsWith("image/")) {
-                            const reader = new FileReader();
-                            reader.onload = function (e) {
-                                const img = $(`<img src="${e.target.result}" alt="Imagen ${index + 1}" class="previewImg">`);
-                                previewContainer.append(img);
-                            };
-                            reader.readAsDataURL(file);
-                        } else {
-                            alert(`El archivo ${file.name} no es una imagen.`);
-                        }
-                    });
-                }
-            });
+            
 
             $("#btnCerrarSesion").click(function() {
                 localStorage.removeItem("idUsuario");
@@ -300,18 +236,14 @@
             });
 
             
-            $(window).on('scroll', function() {
-                if(scroll == true){
-                    // Detectar si está cerca del fondo de la página
-                    if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
-                        if (!loading) {
-                            loading = true;
-                            cargarFeed();
-                        }
-                    }
-                }
-            });
-
+            function getParametroUrl(nombre) {
+                const params = new URLSearchParams(window.location.search);
+                return params.get(nombre);
+            }
+                        
+            const idPost = getParametroUrl("post");
+            const volverA = getParametroUrl("volver");
+            window.VOLVER = volverA;
             
         });
     </script>

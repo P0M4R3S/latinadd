@@ -152,84 +152,58 @@
         
     </div>
 
-    <!--Cargador------------------------------------------------------------------>
-    <div class="cargador">
-        <div class="cargCentral">
-            <div class="imgCargador"><img src="img/icono-tras.png" alt=""></div>
-            <span class="tituloCargador">LATINADD</span>
-            <span class="subtituloCargador">CARGANDO...</span>
-            <div class="sprin"></div>
-        </div>
-    </div>
-
     <!--Contenido------------------------------------------------------------------->
     <div class="principal">
-        <!--Creador de nuevo post ---------------------------------------->
-        <br><br><br>
-        <div class="container-fluid post">
-                <div class="row perfilPost">
-                    <div class="col-2">
-                        <img class="imgPost" src="img/3.jpg" alt="">
-                    </div>
-                    <div class="col-10">
-                        <span class="nombrePost">Nombre de usuario</span>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <textarea class="textareaPost" id="textareaNuevo" rows="4"></textarea>
-                    </div>
-                </div>
-                <div class="row">
-                    <div id="previewContainer"></div>
-                    <div class="col-2 align-items-center d-flex btnImagen">
-                        <svg fill="lightgrey" viewBox="0 0 512 512"><path d="M0 96C0 60.7 28.7 32 64 32l384 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM323.8 202.5c-4.5-6.6-11.9-10.5-19.8-10.5s-15.4 3.9-19.8 10.5l-87 127.6L170.7 297c-4.6-5.7-11.5-9-18.7-9s-14.2 3.3-18.7 9l-64 80c-5.8 7.2-6.9 17.1-2.9 25.4s12.4 13.6 21.6 13.6l96 0 32 0 208 0c8.9 0 17.1-4.9 21.2-12.8s3.6-17.4-1.4-24.7l-120-176zM112 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/></svg>
-                    </div>
-                    <input type="file" id="imageInput" style="display: none;" accept="image/*" multiple>
-                    <div class="col-10 justify-content-end d-flex">
-                        <div class="btnPost" id="btnNuevoPost">Publicar</div>
-                    </div>
-                </div>
-        </div>
-
         <!--Aqui va el feed-------------------------------------------------------->
         <div class="container-fluid contenido">
-            
-        </div>
-
-        <!-- Modal para compartir post -->
-        <div class="modalCompartir">
-            <div class="bloqueCompartir">
-                <div class="container-fluid post">
-                    <div class="row compartirPost">
-                        <div class="col-2">
-                            <img class="imgPost" src="img/3.jpg" alt="">
-                        </div>
-                        <div class="col-10">
-                            <span class="nombrePost">Nombre de usuario</span>
+            <div class="visor fondoPerfil">
+                <div class="container">
+                    <div class="row mb-2">
+                        <div class="col-2" id="btnVolver">
+                            <svg fill="#615DFA" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <textarea class="textareaPost" id="textAreaCompartir" rows="4" placeholder="Haz un comentario..."></textarea>
+                    <div class="post">
+                        <div class="row justify-content-center bannerSuperior">
+                            <div class="col-5">
+                                <img class="mt-5" id="imgPerfil" src="img/3.jpg" alt="">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <span class="nombrePerfil" id="nombrePerfil">Diego Sanchez Pomares</span>
+                        </div>
+                        <div class="row justify-content-around mt-4 mb-4">
+                            <button class="btnAmigo" id="btnAmigo">Amigo/a +</button>
+                            <button class="btnMensaje" id="btnMensaje">Mensaje</button>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class=" justify-content-end d-flex">
-                            <div class="btnPost me-1" id="btnCancelarCompartir">Cancelar</div>
-                            <div class="btnPost" id="btnCompartirPost">Compartir</div>
+                    <div class="post">
+                        <div class="row mt-3">
+                            <div class="row">
+                                <span class="textoTitulo">Acerca de mi</span>
+                            </div>
+                            <div class="row">
+                                <span class="textoDescripcionPersonal" id="descripcionPerfil"></span>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-2"><img src="" id="banderaPerfil" alt=""></div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-2 espacioNeg">
+                                   <img src="img/cake.png" alt="">
+                                </div>
+                                <div class="col-10">
+                                    <span class="textoDescripcionPersonal" id="cumplePerfil"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="post">
-                    <div class="row">
-                        <div class="col-10"><span class="nombrePost" id="vinculoCompartir">Vinculo del post a compartir</span></div>
-                        <div class="col-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"/></svg></div>
-                    </div>
+                <div class="postPerfil">
+                    
                 </div>
             </div>
         </div>
-  
 
     </div>
 
@@ -237,12 +211,11 @@
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/cargarPerfil.js"></script>
-    <script src="js/feed.js"></script>
-    <script src="js/modalCompartir.js"></script>
+    <script src="js/visorPerfil.js"></script>
 
     <script>
         $(document).ready(function(){
-            $(".modalCompartir").hide();
+
               //Control de localStorage
             let idUsuario = localStorage.getItem("idUsuario");
             let tokenUsuario = localStorage.getItem("tokenUsuario");
@@ -262,7 +235,8 @@
                             localStorage.removeItem("tokenUsuario");
                             window.location.href = 'index.html';
                         }else{
-                            cargarPerfil(() => cargarFeed());
+                            //cargar perfil
+                            cargarPerfil();
                         }
                     },
                     error: function(xhr, status, error) {
@@ -275,10 +249,6 @@
             } else {
                 window.location.href = 'index.html';
             }
-
-            setTimeout(function() {
-                $(".cargador").fadeOut(300);
-            }, 500);
 
             $(".sandwich").click(function() {
                 $(".menuLateral").fadeIn(200);
@@ -303,30 +273,7 @@
             $(".privacidad").click(function() { window.location.href = "privacidad.html"; });
             $(".notificaciones").click(function() { window.location.href = "notificaciones.html"; });
 
-            $(".btnImagen").click(function() {
-                $("#imageInput").click();
-            });
-
-            $("#imageInput").on("change", function (event) {
-                const files = event.target.files;
-                const previewContainer = $("#previewContainer");
-                previewContainer.empty();
-
-                if (files.length > 0) {
-                    Array.from(files).forEach((file, index) => {
-                        if (file.type.startsWith("image/")) {
-                            const reader = new FileReader();
-                            reader.onload = function (e) {
-                                const img = $(`<img src="${e.target.result}" alt="Imagen ${index + 1}" class="previewImg">`);
-                                previewContainer.append(img);
-                            };
-                            reader.readAsDataURL(file);
-                        } else {
-                            alert(`El archivo ${file.name} no es una imagen.`);
-                        }
-                    });
-                }
-            });
+            
 
             $("#btnCerrarSesion").click(function() {
                 localStorage.removeItem("idUsuario");
@@ -335,23 +282,16 @@
             });
 
             
-            $(window).on('scroll', function() {
-                if(scroll == true){
-                    // Detectar si está cerca del fondo de la página
-                    if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
-                        if (!loading) {
-                            loading = true;
-                            cargarFeed();
-                        }
-                    }
-                }
-            });
+            function getParametroUrl(nombre) {
+                const params = new URLSearchParams(window.location.search);
+                return params.get(nombre);
+            }
+                        
+            const idVisor = getParametroUrl("id");
+            const volverA = getParametroUrl("volver");
+            window.VOLVER = volverA;
 
-            $(document).on("click", "#btnNuevoPost", function () {
-                crearNuevoPost();
-            });
-
-
+            cargarPerfilUsuario(idVisor);
             
         });
     </script>

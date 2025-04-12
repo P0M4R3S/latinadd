@@ -50,7 +50,7 @@ $stmt->close();
 
 // Guardar imágenes si se enviaron
 if (is_array($imagenes) && count($imagenes) > 0) {
-    $rutaBase = '../imagenes/';
+    $rutaBase = '../../imagenes/';
     if (!is_dir($rutaBase)) mkdir($rutaBase, 0777, true);
 
     foreach ($imagenes as $imgBase64) {
