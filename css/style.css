@@ -268,7 +268,7 @@ button {
 /**Contenido---------------------------------*/
 .principal{
     width: 100%;
-    padding: 15px 5px;
+    padding-top: 10px;
 }
 
 .post{
@@ -416,7 +416,7 @@ button {
     font-optical-sizing: auto;
     font-weight: 600;
     font-style: normal;
-    font-size: 9px;
+    font-size: 8px;
     color: grey;
     margin-top: 10px;
 }
@@ -549,4 +549,84 @@ button {
     border-bottom: 1px solid var(--background-color);
     margin-bottom: 10px;
     padding-bottom: 10px;
+}
+
+/*Modal de mensajes*/
+.bloqueModalMensaje {
+    width: 90%;
+    max-width: 400px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; /* Ensure content is centered vertically */
+}
+
+.txtMensajeModal {
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 30px;
+    color: var(--text-color);
+    margin-top: 10px;
+    max-width: 100%;
+    text-align: center; /* Center the text */
+    margin-bottom: 10px;
+}
+
+/*Modal de la configuracion del post*/
+.bloqueModalPost{
+    width: 90%;
+    max-width: 400px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 14px 7px;
+}
+
+.cuadroModalPost{
+    width: 100%;
+    border: 2px solid black;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 16px;
+    background-color: white;
+    color: var(--text-color);
+}
+
+.cuadroModalPost svg{
+    width: 20px;
+    height: auto;
+    margin-right: 10px;
+}
+
+/*Flotante para los comentarios*/
+.comentarioFlotante {
+    position: fixed;
+    bottom: 60px; /* espacio para menú inferior */
+    left: 0;
+    width: 100%;
+    background: #fff;
+    padding: 10px 15px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.respondiendoA {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+#bloqueComentarios{
+    margin-bottom: 150px;
 }

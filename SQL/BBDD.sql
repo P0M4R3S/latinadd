@@ -234,3 +234,21 @@ CREATE TABLE IF NOT EXISTS reportesconversacion (
     fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
     estado ENUM('pendiente', 'resuelto', 'rechazado') DEFAULT 'pendiente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS reportespost (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    reportador INT NOT NULL,
+    post INT NOT NULL,
+    motivo VARCHAR(255),
+    texto TEXT,
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+    estado ENUM('pendiente', 'resuelto', 'rechazado') DEFAULT 'pendiente'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE likescomentarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario INT NOT NULL,
+    comentario INT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (usuario, comentario)
+);

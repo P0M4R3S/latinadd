@@ -6,12 +6,13 @@ function cargarModalCompartir(idPost){
     let url = "localhost/latinadd/visorPost.html?post="+idPost;
     idCompartir = idPost; // Guardar el id del post a compartir
     $("#vinculoCompartir").text(url);
-    $(".modalCompartir").fadeIn(500);
+    $("#btnCopiarCompartir svg").css("fill", "black");
+    $("#modalCompartir").fadeIn(500);
 }
 
 //Ocultar el modal
 $("#btnCancelarCompartir").click(function(){
-    $(".modalCompartir").fadeOut(500);
+    $("#modalCompartir").fadeOut(500);
 });
 
 $(document).on("click", "#btnCompartirPost", function () {
@@ -40,8 +41,9 @@ $(document).on("click", "#btnCompartirPost", function () {
         success: function (response) {
             if (response.success) {
                 console.log("Post compartido exitosamente.");
-                $(".modalCompartir").fadeOut(300);
-                // Aquí podrías recargar el feed o mostrar el nuevo post
+                $("#modalCompartir").fadeOut(300);
+                cargarMensajeModal("Post compartido exitosamente.");
+                $("#modalMensaje").fadeIn(150);
             } else {
                 console.warn("Error al compartir:", response.mensaje);
             }
@@ -50,5 +52,17 @@ $(document).on("click", "#btnCompartirPost", function () {
             console.error("Error al conectar:", error);
             console.log("Respuesta del servidor:", xhr.responseText);
         }
+    });
+});
+
+
+$("#btnCopiarCompartir").click(function(){
+    // Copiar el enlace al portapapeles
+    let url = document.getElementById("vinculoCompartir").textContent;
+    navigator.clipboard.writeText(url).then(function() {
+        console.log("Enlace copiado al portapapeles: " + url);
+        $("#btnCopiarCompartir svg").css("fill", "#00ff00"); // Cambiar el color del SVG a verde
+    }, function(err) {
+        console.error("Error al copiar el enlace: ", err);
     });
 });

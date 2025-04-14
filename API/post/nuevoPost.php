@@ -26,8 +26,7 @@ if (!in_array($tipo, [1, 2, 3])) {
     exit;
 }
 
-// Validación básica de contenido
-if (empty($texto) && empty($imagenes)) {
+if ($tipo !== 3 && empty($texto) && empty($imagenes)) {
     echo json_encode(['success' => false, 'mensaje' => 'El post no puede estar vacío.']);
     exit;
 }

@@ -1,8 +1,11 @@
-
+//Variable global del numero de post
+let numPost;
+let idUsuarioPost;
 
 function cargarPost(id) {
     const idUsuario = localStorage.getItem("idUsuario");
     const tokenUsuario = localStorage.getItem("tokenUsuario");
+    numPost = id;
     if (!idUsuario || !tokenUsuario) {
         window.location.href = "index.html";
         return;
@@ -19,8 +22,11 @@ function cargarPost(id) {
         dataType: "json",
         success: function(respuesta) {
             if (respuesta.success) {
-                console.log("Post cargado correctamente", respuesta);
-                renderizarPost(respuesta.post, respuesta.comentarios)
+                console.log(respuesta);
+                idUsuarioPost = respuesta.post.usuario;
+                renderizarPost(respuesta.post, respuesta.comentarios);
+            } else {
+                console.warn("No se pudo cargar el post.");
             }
         },
         error: function(xhr, status, error) {
@@ -29,114 +35,304 @@ function cargarPost(id) {
     });
 }
 
-$(document).on("click", "#btnVolver", function() {
-    if(VOLVER === "novedades"){
+function renderizarPost(post, comentarios) {
+    const nombreCompleto = `${post.nombre} ${post.apellidos}`;
+    const fotoPerfil = post.foto || "img/default.jpg";
+    const tiempo = calcularTiempo(post.fecha);
+    const texto = post.texto || "";
+    const likes = post.likes || 0;
+
+    $("#nombrePost").text(nombreCompleto);
+    $("#tiempoPost").text(tiempo);
+    $(".imgPost").first().attr("src", fotoPerfil);
+    $("#txtContenidoPost").text(texto);
+    $("#likesPost").text(`+${likes}`);
+
+    if (post.liked) {
+        $(".btnLike svg").attr("fill", "#615DFA");
+    }
+
+    // Quitar imágenes anteriores
+    $("#bloqueImagenesPost").remove();
+    $("#bloquePostCompartido").remove();
+
+    // Si es un post compartido
+    if (post.tipo == 3 && post.compartido) {
+        const compartido = post.compartido;
+        const compartidoHTML = $(`
+            <div class="row mt-2" id="bloquePostCompartido">
+                <div class="col-12 p-2 rounded border">
+                    <div class="row">
+                        <div class="col-2">
+                            <img class="imgPost" src="${compartido.foto || 'img/default.jpg'}" alt="">
+                        </div>
+                        <div class="col-10">
+                            <span class="nombrePost">${compartido.nombre} ${compartido.apellidos}</span><br>
+                            <span class="tiempoPost">${calcularTiempo(compartido.fecha)}</span>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <span class="textoVisor">${compartido.texto || ''}</span>
+                        </div>
+                    </div>
+                    <div class="row mt-2" id="imagenesCompartido"></div>
+                </div>
+            </div>
+        `);
+
+        // Agregar imágenes al compartido si las hay
+        if (compartido.imagenes && compartido.imagenes.length > 0) {
+            const contenedor = compartidoHTML.find("#imagenesCompartido");
+            compartido.imagenes.forEach(ruta => {
+                const img = $(`<img src="${ruta}" class="img-fluid m-1" style="max-height: 250px;">`);
+                contenedor.append(img);
+            });
+        }
+
+        compartidoHTML.insertAfter("#txtContenidoPost");
+
+    } else {
+        // Añadir imágenes del post original si no es compartido
+        if (post.imagenes && post.imagenes.length > 0) {
+            const bloqueImagenes = $(`
+                <div class="row mb-3" id="bloqueImagenesPost">
+                    <div class="col-12 d-flex flex-wrap justify-content-center"></div>
+                </div>
+            `);
+            post.imagenes.forEach(ruta => {
+                const img = $(`<img src="${ruta}" class="img-fluid m-1" style="max-height: 250px;">`);
+                bloqueImagenes.find("div").append(img);
+            });
+            bloqueImagenes.insertAfter("#txtContenidoPost");
+        }
+    }
+
+    // Renderizar comentarios y respuestas
+    const bloque = $("#bloqueComentarios");
+    bloque.empty();
+
+    const respuestas = {};
+    comentarios.forEach(com => {
+        if (com.idrespuesta) {
+            if (!respuestas[com.idrespuesta]) respuestas[com.idrespuesta] = [];
+            respuestas[com.idrespuesta].push(com);
+        }
+    });
+
+    comentarios.filter(com => !com.idrespuesta).forEach(com => {
+        bloque.append(crearComentarioHTML(com, false));
+        if (respuestas[com.id]) {
+            respuestas[com.id].forEach(res => {
+                bloque.append(crearComentarioHTML(res, true));
+            });
+        }
+    });
+}
+
+
+function crearComentarioHTML(com, esRespuesta = false) {
+    const nombre = `${com.nombre} ${com.apellidos}`;
+    const foto = com.foto || "img/default.jpg";
+    const texto = com.texto;
+    const tiempo = calcularTiempo(com.fecha);
+    const margen = esRespuesta ? `
+    <div class="col-1"><span></span></div>
+    <div class="col-11">
+    ` : '';
+
+    const cierre = esRespuesta ? `</div>` : '';
+    const colorLike = com.liked ? "#615DFA" : "grey";
+
+    return `
+    <div class="row mb-4">
+        ${margen}
+            <div class="row">
+                <div class="col-2">
+                    <img class="imgPost" src="${foto}" alt="">
+                </div>
+                <div class="col-10 globoComentario">
+                    <span class="nombreComentario">${nombre}</span><br>
+                    <span class="textoComentario">${texto}</span>
+                </div>
+            </div>
+            <div class="row d-flex">
+                <div class="col-2"></div>
+                <div class="col-3 minitexto">${tiempo}</div>
+                <div class="col-3 minitexto" style="cursor:pointer; color:${colorLike};" id="btnLikeComentario" data-id="${com.id}">Me gusta</div>
+                <div class="col-3 minitexto btnResponder" data-nombre="${com.nombre + " " + com.apellidos}" data-id="${com.id}">Responder</div>
+                <div class="col-2"></div>
+            </div>
+        ${cierre}
+    </div>`;
+}
+
+
+//Funcionalidad para el like
+//Funcionalidad del boton asociado al like post
+$(document).on("click", ".btnLike", function () {
+    const userId = localStorage.getItem("idUsuario");
+    const token = localStorage.getItem("tokenUsuario");
+
+    $.ajax({
+        url: "API/post/likePost.php",
+        type: "POST",
+        data: {
+            id: userId,
+            token: token,
+            idpost: numPost
+        },
+        dataType: "json",
+        success: function (response) {
+            if (response.success) {
+                console.log(response.mensaje);
+
+                // Actualizar contador de likes
+                const $contador = $("#likesPost");
+                let actual = parseInt($contador.text().replace("+", "")) || 0;
+                $contador.text(response.liked ? `+${actual + 1}` : `+${actual - 1}`);
+
+                // Cambiar color del icono
+                const $icono = $(".btnLike svg");
+                $icono.attr("fill", response.liked ? "#615DFA" : "lightgrey");
+            } else {
+                console.warn("Error al procesar el like:", response.mensaje);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error de conexión:", error);
+            console.log("Respuesta del servidor:", xhr.responseText);
+        }
+    });
+});
+
+//Funcion que redirecciona al perfil del usuario creador del post
+$("#nombrePost").click(function() {
+    window.location.href = "visorPerfil.html?id=" + idUsuarioPost + "&volver=post&idpost=" + numPost;
+});
+
+//Funcionalidad del boton de compartir
+$("#btnCompartir").click(function() {
+    cargarModalCompartir(numPost);
+});
+
+$("#btnMasOpciones").click(function() {
+    activarModalOpcionesPost(numPost, idUsuarioPost);
+});
+
+//Logica del boton volver que redirecciona
+$(document).on("click", "#btnVolver", function () {
+    if (typeof VOLVER !== 'undefined' && VOLVER === "novedades") {
+        window.location.href = "novedades.html";
+    }else if (typeof VOLVER !== 'undefined' && VOLVER === "post") {
+        const urlParams = new URLSearchParams(window.location.search);
+        const idPost = urlParams.get("idpost");
+        window.location.href = "localhost/latinadd/visorPost.html?post=" + idPost;
+    }else{
         window.location.href = "novedades.html";
     }
 });
 
 
-function renderizarPost(post, comentarios) {
-    const nombreCompleto = `${post.nombre} ${post.apellidos}`;
-    const fotoPerfil = post.foto || "img/default.jpg";
-    const tiempo = calcularTiempo(post.fecha); // Asumimos que hay una función para eso
-    const texto = post.texto || "";
-    const likes = post.likes || 0;
-    const imagenes = post.imagenes || [];
+let RESPONDIENDO_A = null;
 
-    let html = `
-    <div class="visor">
-        <div class="container">
-            <div class="row">
-                <div class="col-2" id="btnVolver">
-                    <svg onclick="window.history.back()" fill="#615DFA" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
-                    </svg>
-                </div>
-            </div>
-            <div class="container-fluid post">
-                <div class="row perfilPost">
-                    <div class="col-2">
-                        <img class="imgPost" src="${fotoPerfil}" alt="">
-                    </div>
-                    <div class="col-8">
-                        <span class="nombrePost">${nombreCompleto}</span><br>
-                        <span class="tiempoPost">${tiempo}</span>
-                    </div>
-                    <div class="col-2">
-                        <svg fill="lightgrey" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                            <path d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/>
-                        </svg>
-                    </div>
-                </div>
-                <div class="row"><span class="textoVisor perfilPost">${texto}</span></div>
-    `;
 
-    // Agregar imágenes si las hay
-    if (imagenes.length > 0) {
-        html += '<div class="row mb-3"><div class="col-12 d-flex flex-wrap justify-content-center">';
-        imagenes.forEach(ruta => {
-            html += `<img src="${ruta}" class="img-fluid m-1" style="max-height: 250px;">`;
-        });
-        html += '</div></div>';
+$(document).on("click", ".btnResponder", function () {
+    const nombre = $(this).data("nombre");
+    const idComentario = $(this).data("id");
+    RESPONDIENDO_A = idComentario;
+
+    $("#comentarioFlotante").removeClass("d-none");
+    $("#respondiendoA").removeClass("d-none");
+    $("#nombreRespondiendo").text(nombre);
+    $("#inputComentario").val("").focus();
+});
+
+$(document).on("click", "#cancelarRespuesta", function () {
+    RESPONDIENDO_A = null;
+    $("#respondiendoA").addClass("d-none");
+});
+
+$(document).on("click", "#btnEnviarComentario", function () {
+    const texto = $("#inputComentario").val().trim();
+    const idUsuario = localStorage.getItem("idUsuario");
+    const token = localStorage.getItem("tokenUsuario");
+
+    if (!texto) {
+        alert("Escribe algo para comentar.");
+        return;
     }
 
-    html += `
-                <div class="row perfilPost">
-                    <div class="col-6">
-                        <img src="img/reaction/reacciones.png" alt="">
-                        <span class="textareaPost">+${likes}</span>
-                    </div>
-                </div>
-                <div class="row mt-3 d-flex justify-content-around perfilPost">
-                    <div class="col-2">
-                        <svg fill="lightgrey" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                            <path d="..."/> <!-- Aquí puedes reemplazar por el path completo -->
-                        </svg>
-                    </div>
-                    <div class="col-2">
-                        <svg fill="lightgrey" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                            <path d="..."/>
-                        </svg>
-                    </div>
-                    <div class="col-2">
-                        <svg fill="lightgrey" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                            <path d="..."/>
-                        </svg>
-                    </div>
-                </div>
-    `;
+    $.ajax({
+        url: "API/post/comentarPost.php",
+        type: "POST",
+        data: {
+            id: idUsuario,
+            token: token,
+            texto: texto,
+            idpost: numPost,
+            idrespuesta: RESPONDIENDO_A
+        },
+        dataType: "json",
+        success: function (response) {
+            if (response.success) {
+                console.log("Comentario enviado");
 
-    // Comentarios
-    comentarios.forEach(com => {
-        const nombreCom = `${com.nombre} ${com.apellidos}`;
-        const fotoCom = com.foto || "img/default.jpg";
-        const textoCom = com.texto;
-        const tiempoCom = calcularTiempo(com.fecha);
-        const claseMargen = com.idrespuesta ? 'col-11 offset-1' : 'col-12';
-        html += `
-        <div class="row mb-4">
-            <div class="${claseMargen}">
-                <div class="row">
-                    <div class="col-2">
-                        <img class="imgPost" src="${fotoCom}" alt="">
-                    </div>
-                    <div class="col-10 globoComentario">
-                        <span class="nombreComentario">${nombreCom}</span><br>
-                        <span class="textoComentario">${textoCom}</span>
-                    </div>
-                </div>
-                <div class="row d-flex">
-                    <div class="col-2"></div>
-                    <div class="col-2 minitexto">${tiempoCom}</div>
-                    <div class="col-3 minitexto">Me gusta</div>
-                    <div class="col-3 minitexto">Responder</div>
-                    <div class="col-2"></div>
-                </div>
-            </div>
-        </div>`;
+                // Limpiar campo y resetear estado
+                $("#inputComentario").val("");
+                $("#respondiendoA").addClass("d-none");
+                RESPONDIENDO_A = null;
+
+                // Recargar comentarios del post
+                cargarPost(numPost);
+            } else {
+                alert(response.mensaje || "No se pudo enviar el comentario.");
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error al enviar comentario:", error);
+            console.log(xhr.responseText);
+        }
     });
+});
 
-    html += `</div></div></div>`;
-    $(".contenido").html(html);
-}
+
+//Funcionalidad del boton me gusta de los comentarios
+$(document).on("click", "#btnLikeComentario", function () {
+    const idComentario = $(this).data("id");
+    const idUsuario = localStorage.getItem("idUsuario");
+    const token = localStorage.getItem("tokenUsuario");
+    const $btn = $(this);
+
+    if (!idUsuario || !token) {
+        alert("Debes iniciar sesión.");
+        return;
+    }
+
+    $.ajax({
+        url: "API/post/likeComentario.php",
+        type: "POST",
+        data: {
+            id: idUsuario,
+            token: token,
+            idcomentario: idComentario
+        },
+        dataType: "json",
+        success: function (response) {
+            if (response.success) {
+                // Cambiar visualmente el botón
+                if (response.liked) {
+                    $btn.css("color", "#615DFA");
+                } else {
+                    $btn.css("color", "grey");
+                }
+            } else {
+                console.warn("Error:", response.mensaje);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error al conectar con el servidor:", error);
+            console.log("Respuesta del servidor:", xhr.responseText);
+        }
+    });
+});
