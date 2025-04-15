@@ -67,13 +67,13 @@ function renderizarPost(post, comentarios) {
                             <img class="imgPost" src="${compartido.foto || 'img/default.jpg'}" alt="">
                         </div>
                         <div class="col-10">
-                            <span class="nombrePost">${compartido.nombre} ${compartido.apellidos}</span><br>
+                            <span class="nombrePost" id="nombrePost">${compartido.nombre} ${compartido.apellidos}</span><br>
                             <span class="tiempoPost">${calcularTiempo(compartido.fecha)}</span>
                         </div>
                     </div>
                     <div class="row mt-2">
                         <div class="col-12">
-                            <span class="textoVisor">${compartido.texto || ''}</span>
+                            <span class="textoVisor"  id="txtContenidoPost">${compartido.texto || ''}</span>
                         </div>
                     </div>
                     <div class="row mt-2" id="imagenesCompartido"></div>
