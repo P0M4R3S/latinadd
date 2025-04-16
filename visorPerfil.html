@@ -207,6 +207,86 @@
 
     </div>
 
+     <!--Cargador------------------------------------------------------------------>
+     <div class="cargador">
+        <div class="cargCentral">
+            <div class="imgCargador"><img src="img/icono-tras.png" alt=""></div>
+            <span class="tituloCargador">LATINADD</span>
+            <span class="subtituloCargador">CARGANDO...</span>
+            <div class="sprin"></div>
+        </div>
+    </div>
+
+        <!-- Modal para compartir post -->
+        <div class="modalCompartir d-none" id="modalCompartir">
+            <div class="bloqueCompartir">
+                <div class="container-fluid post">
+                    <div class="row compartirPost">
+                        <div class="col-2">
+                            <img class="imgPost" src="img/default.png" alt="">
+                        </div>
+                        <div class="col-10">
+                            <span class="nombrePost">Nombre de usuario</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12" id="btnMasOpciones">
+                            <textarea class="textareaPost" id="textAreaCompartir" rows="4" placeholder="Haz un comentario..."></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class=" justify-content-end d-flex">
+                            <div class="btnPost me-1" id="btnCancelarCompartir">Cancelar</div>
+                            <div class="btnPost" id="btnCompartirPost">Compartir</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="post">
+                    <div class="row">
+                        <div class="col-10"><span class="nombrePost" id="vinculoCompartir">Vinculo del post a compartir</span></div>
+                        <div class="col-2" id="btnCopiarCompartir"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"/></svg></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para los mensajes -->
+         <div class="modalCompartir d-none" id="modalMensaje">
+            <div class="bloqueModalMensaje">
+                <span class="txtMensajeModal">Algo salió mal</span>
+                <div class="btnPost" id="btnAceptarMensaje">Aceptar</div>
+            </div>
+         </div>
+
+         <!-- Modal para la configuracion del post -->
+         <div class="modalCompartir d-none" id="modalConfPost">
+            <div class="bloqueModalPost">
+                <div class="modalPostPropio">
+                    <div class="cuadroModalPost" id="btnEliminarPost">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path d="M9 3h6v1h5v2H4V4h5V3zm-4 4h14v13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7zm5 2v9h2V9H10zm4 0v9h2V9h-2z"/>
+                          </svg>Eliminar el post
+                    </div>
+                    <div class="cuadroModalPost" id="btnCopiarPost">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"/></svg>Copiar enlace
+                    </div>
+                    <div class="btnPost btnCancelarConf">Cancelar</div>
+                </div>
+                <div class="modalPostOtro">
+                    <div class="cuadroModalPost btnCopiarPost" id="btnDenunciarPost">
+                        <svg width="20" height="20" viewBox="0 0 512 512" fill="currentColor">
+                            <path d="M256 48c-13.3 0-25.6 7.1-32.2 18.7L9.4 442.3C1.4 455.9 0 471.4 5.1 485.6S21.9 512 36.7 512H475.3c14.8 0 28.2-8.4 33.3-22.6s3.7-29.7-4.3-43.3L288.2 66.7C281.6 55.1 269.3 48 256 48zm0 96c13.3 0 24 10.7 24 24v112c0 13.3-10.7 24-24 24s-24-10.7-24-24V168c0-13.3 10.7-24 24-24zm0 232c17.7 0 32 14.3 32 32s-14.3 32-32 32s-32-14.3-32-32s14.3-32 32-32z"/>
+                          </svg>
+                        Denunciar el post
+                    </div>
+                    <div class="cuadroModalPost btnCopiarPost" id="btnCopiarPost">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"/></svg>Copiar enlace
+                    </div>
+                    <div class="btnPost btnCancelarConf">Cancelar</div>
+                </div>
+            </div>
+         </div>
+
     <!--Sources de JS-->
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -215,7 +295,9 @@
 
     <script>
         $(document).ready(function(){
-
+            $("#modalCompartir").hide();
+            $("#modalMensaje").hide();
+            $("#modalConfPost").hide();
               //Control de localStorage
             let idUsuario = localStorage.getItem("idUsuario");
             let tokenUsuario = localStorage.getItem("tokenUsuario");
@@ -260,6 +342,10 @@
                     $(".menuLateral").fadeOut(200);
                 });
             });
+
+            setTimeout(function() {
+                $(".cargador").fadeOut(300);
+            }, 500);
 
             $(".novedades").click(function() { window.location.href = "novedades.html"; });
             $(".grupos").click(function() { window.location.href = "grupos.html"; });

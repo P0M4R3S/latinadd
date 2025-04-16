@@ -228,9 +228,18 @@
             </div>
         </div>
 
+        <!--Cargador------------------------------------------------------------------>
+    <div class="cargador">
+        <div class="cargCentral">
+            <div class="imgCargador"><img src="img/icono-tras.png" alt=""></div>
+            <span class="tituloCargador">LATINADD</span>
+            <span class="subtituloCargador">CARGANDO...</span>
+            <div class="sprin"></div>
+        </div>
+    </div>
 
         <!-- Modal para compartir post -->
-        <div class="modalCompartir" id="modalCompartir">
+        <div class="modalCompartir d-none" id="modalCompartir">
             <div class="bloqueCompartir">
                 <div class="container-fluid post">
                     <div class="row compartirPost">
@@ -263,7 +272,7 @@
         </div>
 
         <!-- Modal para los mensajes -->
-         <div class="modalCompartir" id="modalMensaje">
+         <div class="modalCompartir d-none" id="modalMensaje">
             <div class="bloqueModalMensaje">
                 <span class="txtMensajeModal">Algo salió mal</span>
                 <div class="btnPost" id="btnAceptarMensaje">Aceptar</div>
@@ -271,7 +280,7 @@
          </div>
 
          <!-- Modal para la configuracion del post -->
-         <div class="modalCompartir" id="modalConfPost">
+         <div class="modalCompartir d-none" id="modalConfPost">
             <div class="bloqueModalPost">
                 <div class="modalPostPropio">
                     <div class="cuadroModalPost" id="btnEliminarPost">
@@ -379,6 +388,10 @@
                 localStorage.removeItem("tokenUsuario");
                 window.location.href = "index.html";
             });
+
+            setTimeout(function() {
+                $(".cargador").fadeOut(300);
+            }, 500);
 
             
             function getParametroUrl(nombre) {
