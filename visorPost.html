@@ -325,6 +325,9 @@
             $("#modalCompartir").hide();
             $("#modalMensaje").hide();
             $("#modalConfPost").hide();
+            $("#modalCompartir").removeClass("d-none");
+            $("#modalMensaje").removeClass("d-none");
+            $("#modalConfPost").removeClass("d-none");
               //Control de localStorage
             let idUsuario = localStorage.getItem("idUsuario");
             let tokenUsuario = localStorage.getItem("tokenUsuario");
@@ -399,7 +402,7 @@
                 return params.get(nombre);
             }
                         
-            const idPost = getParametroUrl("post");
+            const idPost = getParametroUrl("idpost");
             const volverA = getParametroUrl("volver");
             window.VOLVER = volverA;
             cargarPost(idPost);

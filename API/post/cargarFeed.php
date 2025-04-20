@@ -19,14 +19,8 @@ if (!validarSesion($id, $token)) {
     exit;
 }
 
-// Cargar posts de todo tipo por fecha descendente
-$sql = "SELECT p.*, 
-            u.nombre AS usuario_nombre, u.apellidos AS usuario_apellidos, u.foto AS usuario_foto
-        FROM posts p
-        LEFT JOIN usuarios u ON p.usuario = u.id
-        ORDER BY p.fecha DESC
-        LIMIT ? OFFSET ?";
-
+// Cargar posts
+$sql = "SELECT * FROM posts ORDER BY fecha DESC LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $limite, $offset);
 $stmt->execute();
@@ -45,9 +39,39 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-// Cargar imágenes asociadas a posts
-$imagenesPorPost = [];
+// Obtener info adicional según tipo del post (usuario o página)
+foreach ($posts as &$post) {
+    if ($post['tipo'] == 2) {
+        // Post de página
+        $stmt = $conn->prepare("SELECT nombre, imagen FROM paginas WHERE id = ?");
+        $stmt->bind_param("i", $post['usuario']);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        if ($res->num_rows > 0) {
+            $datos = $res->fetch_assoc();
+            $post['usuario_nombre'] = $datos['nombre'];
+            $post['usuario_apellidos'] = '';
+            $post['usuario_foto'] = $datos['imagen'];
+        }
+        $stmt->close();
+    } else {
+        // Post de usuario
+        $stmt = $conn->prepare("SELECT nombre, apellidos, foto FROM usuarios WHERE id = ?");
+        $stmt->bind_param("i", $post['usuario']);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        if ($res->num_rows > 0) {
+            $datos = $res->fetch_assoc();
+            $post['usuario_nombre'] = $datos['nombre'];
+            $post['usuario_apellidos'] = $datos['apellidos'];
+            $post['usuario_foto'] = $datos['foto'];
+        }
+        $stmt->close();
+    }
+}
 
+// Cargar imágenes asociadas
+$imagenesPorPost = [];
 if (!empty($post_ids)) {
     $placeholders = implode(',', array_fill(0, count($post_ids), '?'));
     $types = str_repeat('i', count($post_ids));
@@ -56,81 +80,75 @@ if (!empty($post_ids)) {
     $stmt->bind_param($types, ...$post_ids);
     $stmt->execute();
     $result = $stmt->get_result();
-
     while ($img = $result->fetch_assoc()) {
         $imagenesPorPost[$img['post_id']][] = $img['ruta'];
     }
     $stmt->close();
 }
 
-// Cargar datos de los posts compartidos
+// Obtener datos de posts compartidos
 $compartidos = [];
-
 if (!empty($post_ids_compartidos)) {
     $placeholders = implode(',', array_fill(0, count($post_ids_compartidos), '?'));
     $types = str_repeat('i', count($post_ids_compartidos));
-
-    $sql = "SELECT p.*, u.nombre, u.apellidos, u.foto
-            FROM posts p
-            LEFT JOIN usuarios u ON p.usuario = u.id
-            WHERE p.id IN ($placeholders)";
-
+    $sql = "SELECT * FROM posts WHERE id IN ($placeholders)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param($types, ...$post_ids_compartidos);
     $stmt->execute();
-    $result = $stmt->get_result();
-
-    while ($comp = $result->fetch_assoc()) {
-        $comp['imagenes'] = [];
-        $compartidos[$comp['id']] = $comp;
+    $res = $stmt->get_result();
+    while ($row = $res->fetch_assoc()) {
+        $compartidos[$row['id']] = $row;
     }
     $stmt->close();
 
-    // Agregar imágenes a los compartidos
+    // Agregar nombre/foto a compartidos
+    foreach ($compartidos as &$comp) {
+        if ($comp['tipo'] == 2) {
+            $stmt = $conn->prepare("SELECT nombre, imagen FROM paginas WHERE id = ?");
+        } else {
+            $stmt = $conn->prepare("SELECT nombre, apellidos, foto FROM usuarios WHERE id = ?");
+        }
+        $stmt->bind_param("i", $comp['usuario']);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        if ($res->num_rows > 0) {
+            $datos = $res->fetch_assoc();
+            $comp['nombre'] = $datos['nombre'];
+            $comp['apellidos'] = $datos['apellidos'] ?? '';
+            $comp['foto'] = $datos['foto'] ?? $datos['imagen'] ?? '';
+        }
+        $stmt->close();
+    }
+
+    // Cargar imágenes para compartidos
     $sql = "SELECT post_id, ruta FROM imagenes WHERE post_id IN ($placeholders)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param($types, ...$post_ids_compartidos);
     $stmt->execute();
-    $result = $stmt->get_result();
-
-    while ($img = $result->fetch_assoc()) {
+    $res = $stmt->get_result();
+    while ($img = $res->fetch_assoc()) {
         $compartidos[$img['post_id']]['imagenes'][] = $img['ruta'];
     }
     $stmt->close();
 }
 
-// Agregar imágenes y datos compartidos a los posts
-foreach ($posts as &$post) {
-    $post['imagenes'] = $imagenesPorPost[$post['id']] ?? [];
-    if ($post['tipo'] == 3 && isset($compartidos[$post['idcompartido']])) {
-        $post['compartido'] = $compartidos[$post['idcompartido']];
-    } else {
-        $post['compartido'] = null;
-    }
-}
-
-// Cargar posts que el usuario ha dado like
+// Cargar likes del usuario
 $likesUsuario = [];
-
 if (!empty($post_ids)) {
     $placeholders = implode(',', array_fill(0, count($post_ids), '?'));
     $types = str_repeat('i', count($post_ids));
-    $params = array_merge([$types], $post_ids);
     $sql = "SELECT post FROM likespost WHERE usuario = ? AND post IN ($placeholders)";
     $stmt = $conn->prepare($sql);
-
-    // Construcción dinámica de bind_param
     $stmt->bind_param(str_repeat('i', count($post_ids) + 1), $id, ...$post_ids);
     $stmt->execute();
-    $result = $stmt->get_result();
-
-    while ($like = $result->fetch_assoc()) {
+    $res = $stmt->get_result();
+    while ($like = $res->fetch_assoc()) {
         $likesUsuario[] = $like['post'];
     }
     $stmt->close();
 }
 
-// Agregar imágenes, datos compartidos y liked
+// Agregar datos finales
 foreach ($posts as &$post) {
     $post['imagenes'] = $imagenesPorPost[$post['id']] ?? [];
     $post['liked'] = in_array($post['id'], $likesUsuario);
@@ -140,7 +158,6 @@ foreach ($posts as &$post) {
         $post['compartido'] = null;
     }
 }
-
 
 echo json_encode([
     'success' => true,

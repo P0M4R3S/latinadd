@@ -199,7 +199,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="postPerfil">
+                <div class="postPerfil mb-5">
                     
                 </div>
             </div>
@@ -292,12 +292,18 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/cargarPerfil.js"></script>
     <script src="js/visorPerfil.js"></script>
+    <script src="js/modalCompartir.js"></script>
+    <script src="js/modalMensajes.js"></script>
+    <script src="js/modalOpcionesPost.js"></script>
 
     <script>
         $(document).ready(function(){
             $("#modalCompartir").hide();
             $("#modalMensaje").hide();
             $("#modalConfPost").hide();
+            $("#modalCompartir").removeClass("d-none");
+            $("#modalMensaje").removeClass("d-none");
+            $("#modalConfPost").removeClass("d-none");
               //Control de localStorage
             let idUsuario = localStorage.getItem("idUsuario");
             let tokenUsuario = localStorage.getItem("tokenUsuario");

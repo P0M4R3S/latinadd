@@ -5,28 +5,18 @@ require_once '../conectar.php';
 header('Content-Type: application/json');
 $conn->set_charset("utf8");
 
-// Obtener datos del usuario y post
 $id = $_POST['id'] ?? '';
 $token = $_POST['token'] ?? '';
 $idpost = $_POST['idpost'] ?? '';
 
-// Validar sesión
 if (!validarSesion($id, $token)) {
     echo json_encode(['success' => false, 'mensaje' => 'Sesión no válida.']);
     exit;
 }
 
-// Obtener datos del post principal
-$sql = "SELECT p.id, p.tipo, p.usuario, p.texto, p.fecha, p.likes, p.comentarios, p.idcompartido,
-               u.nombre, u.apellidos, u.foto
-        FROM posts p
-        JOIN usuarios u ON p.usuario = u.id
-        WHERE p.id = ?";
+// Obtener el post principal
+$sql = "SELECT * FROM posts WHERE id = ?";
 $stmt = $conn->prepare($sql);
-if (!$stmt) {
-    echo json_encode(['success' => false, 'mensaje' => 'Error SQL (post): ' . $conn->error]);
-    exit;
-}
 $stmt->bind_param("i", $idpost);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -39,74 +29,106 @@ if ($result->num_rows === 0) {
 $post = $result->fetch_assoc();
 $stmt->close();
 
-// Verificar si el usuario ha dado like al post
+// Obtener información del autor del post (usuario o página)
+if ($post['tipo'] == 2) { // post de página
+    $sql = "SELECT nombre, imagen AS foto FROM paginas WHERE id = ?";
+} else {
+    $sql = "SELECT nombre, apellidos, foto FROM usuarios WHERE id = ?";
+}
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $post['usuario']);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $autor = $result->fetch_assoc();
+    $post['nombre'] = $autor['nombre'];
+    $post['apellidos'] = $autor['apellidos'] ?? '';
+    $post['foto'] = $autor['foto'];
+} else {
+    $post['nombre'] = 'Desconocido';
+    $post['apellidos'] = '';
+    $post['foto'] = 'img/default.jpg';
+}
+$stmt->close();
+
+// Verificar si el usuario actual dio like
 $sql = "SELECT 1 FROM likespost WHERE usuario = ? AND post = ?";
 $stmt = $conn->prepare($sql);
-if (!$stmt) {
-    echo json_encode(['success' => false, 'mensaje' => 'Error SQL (likes post): ' . $conn->error]);
-    exit;
-}
 $stmt->bind_param("ii", $id, $idpost);
 $stmt->execute();
 $result = $stmt->get_result();
 $post['liked'] = $result->num_rows > 0;
 $stmt->close();
 
-// Obtener imágenes del post
+// Cargar imágenes del post
 $sql = "SELECT ruta FROM imagenes WHERE post_id = ?";
 $stmt = $conn->prepare($sql);
-if (!$stmt) {
-    echo json_encode(['success' => false, 'mensaje' => 'Error SQL (imagenes): ' . $conn->error]);
-    exit;
-}
 $stmt->bind_param("i", $idpost);
 $stmt->execute();
 $result = $stmt->get_result();
-
 $imagenes = [];
-while ($row = $result->fetch_assoc()) {
-    $imagenes[] = $row['ruta'];
+while ($img = $result->fetch_assoc()) {
+    $imagenes[] = $img['ruta'];
 }
 $post['imagenes'] = $imagenes;
 $stmt->close();
 
-// Si el post es compartido, obtener datos del original
+// Si es un post compartido, obtener datos del post original
 if ($post['tipo'] == 3 && !empty($post['idcompartido'])) {
-    $sql = "SELECT p.id, p.usuario, p.texto, p.fecha, p.likes, p.comentarios,
-                   u.nombre, u.apellidos, u.foto
-            FROM posts p
-            JOIN usuarios u ON p.usuario = u.id
-            WHERE p.id = ?";
+    $sql = "SELECT * FROM posts WHERE id = ?";
     $stmt = $conn->prepare($sql);
-    if ($stmt) {
-        $stmt->bind_param("i", $post['idcompartido']);
+    $stmt->bind_param("i", $post['idcompartido']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $compartido = $result->fetch_assoc();
+        $stmt->close();
+
+        // Obtener info del autor del post compartido
+        if ($compartido['tipo'] == 2) {
+            $sql = "SELECT nombre, imagen AS foto FROM paginas WHERE id = ?";
+        } else {
+            $sql = "SELECT nombre, apellidos, foto FROM usuarios WHERE id = ?";
+        }
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $compartido['usuario']);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            $compartido = $result->fetch_assoc();
-
-            // Obtener imágenes del compartido
-            $sql = "SELECT ruta FROM imagenes WHERE post_id = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("i", $compartido['id']);
-            $stmt->execute();
-            $resImg = $stmt->get_result();
-
-            $imagenesComp = [];
-            while ($img = $resImg->fetch_assoc()) {
-                $imagenesComp[] = $img['ruta'];
-            }
-            $compartido['imagenes'] = $imagenesComp;
-            $post['compartido'] = $compartido;
+            $autorC = $result->fetch_assoc();
+            $compartido['nombre'] = $autorC['nombre'];
+            $compartido['apellidos'] = $autorC['apellidos'] ?? '';
+            $compartido['foto'] = $autorC['foto'];
         } else {
-            $post['compartido'] = null;
+            $compartido['nombre'] = 'Desconocido';
+            $compartido['apellidos'] = '';
+            $compartido['foto'] = 'img/default.jpg';
         }
         $stmt->close();
+
+        // Cargar imágenes del post compartido
+        $sql = "SELECT ruta FROM imagenes WHERE post_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $compartido['id']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $imagenesComp = [];
+        while ($img = $result->fetch_assoc()) {
+            $imagenesComp[] = $img['ruta'];
+        }
+        $compartido['imagenes'] = $imagenesComp;
+        $stmt->close();
+
+        $post['compartido'] = $compartido;
+    } else {
+        $post['compartido'] = null;
     }
 }
 
-// Obtener comentarios con campo liked
+// Obtener comentarios
 $sql = "SELECT c.id, c.usuario AS idusuario, u.nombre, u.apellidos, u.foto, c.texto, c.fecha, c.idrespuesta,
                IF(lc.id IS NOT NULL, 1, 0) AS liked
         FROM comentariospost c
@@ -115,10 +137,6 @@ $sql = "SELECT c.id, c.usuario AS idusuario, u.nombre, u.apellidos, u.foto, c.te
         WHERE c.post = ?
         ORDER BY c.fecha ASC";
 $stmt = $conn->prepare($sql);
-if (!$stmt) {
-    echo json_encode(['success' => false, 'mensaje' => 'Error SQL (comentarios): ' . $conn->error]);
-    exit;
-}
 $stmt->bind_param("ii", $id, $idpost);
 $stmt->execute();
 $result = $stmt->get_result();

@@ -1,11 +1,13 @@
-//Variable global del numero de post
+//Variable global del número de post
 let numPost;
 let idUsuarioPost;
+let tipoAutorPost;
 
 function cargarPost(id) {
     const idUsuario = localStorage.getItem("idUsuario");
     const tokenUsuario = localStorage.getItem("tokenUsuario");
     numPost = id;
+
     if (!idUsuario || !tokenUsuario) {
         window.location.href = "index.html";
         return;
@@ -24,9 +26,10 @@ function cargarPost(id) {
             if (respuesta.success) {
                 console.log(respuesta);
                 idUsuarioPost = respuesta.post.usuario;
+                tipoAutorPost = respuesta.post.tipoAutor; // 'usuario' o 'pagina'
                 renderizarPost(respuesta.post, respuesta.comentarios);
             } else {
-                console.warn("No se pudo cargar el post.");
+                console.warn(respuesta.mensaje || "No se pudo cargar el post.");
             }
         },
         error: function(xhr, status, error) {
@@ -36,7 +39,7 @@ function cargarPost(id) {
 }
 
 function renderizarPost(post, comentarios) {
-    const nombreCompleto = `${post.nombre} ${post.apellidos}`;
+    const nombreCompleto = post.tipoAutor === "pagina" ? post.nombre : `${post.nombre} ${post.apellidos}`;
     const fotoPerfil = post.foto || "img/default.jpg";
     const tiempo = calcularTiempo(post.fecha);
     const texto = post.texto || "";
@@ -52,13 +55,15 @@ function renderizarPost(post, comentarios) {
         $(".btnLike svg").attr("fill", "#615DFA");
     }
 
-    // Quitar imágenes anteriores
     $("#bloqueImagenesPost").remove();
     $("#bloquePostCompartido").remove();
 
-    // Si es un post compartido
     if (post.tipo == 3 && post.compartido) {
         const compartido = post.compartido;
+        const nombreCompartido = post.tipoAutorCompartido === "pagina"
+            ? compartido.nombre
+            : `${compartido.nombre} ${compartido.apellidos}`;
+
         const compartidoHTML = $(`
             <div class="row mt-2" id="bloquePostCompartido">
                 <div class="col-12 p-2 rounded border">
@@ -67,13 +72,13 @@ function renderizarPost(post, comentarios) {
                             <img class="imgPost" src="${compartido.foto || 'img/default.jpg'}" alt="">
                         </div>
                         <div class="col-10">
-                            <span class="nombrePost" id="nombrePost">${compartido.nombre} ${compartido.apellidos}</span><br>
+                            <span class="nombrePost">${nombreCompartido}</span><br>
                             <span class="tiempoPost">${calcularTiempo(compartido.fecha)}</span>
                         </div>
                     </div>
                     <div class="row mt-2">
                         <div class="col-12">
-                            <span class="textoVisor"  id="txtContenidoPost">${compartido.texto || ''}</span>
+                            <span class="textoVisor">${compartido.texto || ''}</span>
                         </div>
                     </div>
                     <div class="row mt-2" id="imagenesCompartido"></div>
@@ -81,7 +86,6 @@ function renderizarPost(post, comentarios) {
             </div>
         `);
 
-        // Agregar imágenes al compartido si las hay
         if (compartido.imagenes && compartido.imagenes.length > 0) {
             const contenedor = compartidoHTML.find("#imagenesCompartido");
             compartido.imagenes.forEach(ruta => {
@@ -93,7 +97,6 @@ function renderizarPost(post, comentarios) {
         compartidoHTML.insertAfter("#txtContenidoPost");
 
     } else {
-        // Añadir imágenes del post original si no es compartido
         if (post.imagenes && post.imagenes.length > 0) {
             const bloqueImagenes = $(`
                 <div class="row mb-3" id="bloqueImagenesPost">
@@ -108,7 +111,6 @@ function renderizarPost(post, comentarios) {
         }
     }
 
-    // Renderizar comentarios y respuestas
     const bloque = $("#bloqueComentarios");
     bloque.empty();
 
@@ -130,17 +132,12 @@ function renderizarPost(post, comentarios) {
     });
 }
 
-
 function crearComentarioHTML(com, esRespuesta = false) {
     const nombre = `${com.nombre} ${com.apellidos}`;
     const foto = com.foto || "img/default.jpg";
     const texto = com.texto;
     const tiempo = calcularTiempo(com.fecha);
-    const margen = esRespuesta ? `
-    <div class="col-1"><span></span></div>
-    <div class="col-11">
-    ` : '';
-
+    const margen = esRespuesta ? `<div class="col-1"></div><div class="col-11">` : '';
     const cierre = esRespuesta ? `</div>` : '';
     const colorLike = com.liked ? "#615DFA" : "grey";
 
@@ -161,15 +158,12 @@ function crearComentarioHTML(com, esRespuesta = false) {
                 <div class="col-3 minitexto">${tiempo}</div>
                 <div class="col-3 minitexto" style="cursor:pointer; color:${colorLike};" id="btnLikeComentario" data-id="${com.id}">Me gusta</div>
                 <div class="col-3 minitexto btnResponder" data-nombre="${com.nombre + " " + com.apellidos}" data-id="${com.id}">Responder</div>
-                <div class="col-2"></div>
+                <div class="col-1"></div>
             </div>
         ${cierre}
     </div>`;
 }
 
-
-//Funcionalidad para el like
-//Funcionalidad del boton asociado al like post
 $(document).on("click", ".btnLike", function () {
     const userId = localStorage.getItem("idUsuario");
     const token = localStorage.getItem("tokenUsuario");
@@ -185,75 +179,61 @@ $(document).on("click", ".btnLike", function () {
         dataType: "json",
         success: function (response) {
             if (response.success) {
-                console.log(response.mensaje);
-
-                // Actualizar contador de likes
                 const $contador = $("#likesPost");
                 let actual = parseInt($contador.text().replace("+", "")) || 0;
                 $contador.text(response.liked ? `+${actual + 1}` : `+${actual - 1}`);
-
-                // Cambiar color del icono
                 const $icono = $(".btnLike svg");
                 $icono.attr("fill", response.liked ? "#615DFA" : "lightgrey");
-            } else {
-                console.warn("Error al procesar el like:", response.mensaje);
             }
-        },
-        error: function (xhr, status, error) {
-            console.error("Error de conexión:", error);
-            console.log("Respuesta del servidor:", xhr.responseText);
         }
     });
 });
 
-//Funcion que redirecciona al perfil del usuario creador del post
-$("#nombrePost").click(function() {
-    window.location.href = "visorPerfil.html?id=" + idUsuarioPost + "&volver=post&idpost=" + numPost;
+$("#nombrePost").click(function () {
+    if (tipoAutorPost === "pagina") {
+        window.location.href = "visorPagina.html?id=" + idUsuarioPost + "&volver=post";
+    } else {
+        window.location.href = "visorPerfil.html?usuario=" + idUsuarioPost + "&volver=post";
+    }
 });
 
-//Funcionalidad del boton de compartir
-$("#btnCompartir").click(function() {
+$("#btnCompartir").click(function () {
     cargarModalCompartir(numPost);
 });
 
-$("#btnMasOpciones").click(function() {
+$("#btnMasOpciones").click(function () {
     activarModalOpcionesPost(numPost, idUsuarioPost);
 });
 
-//Logica del boton volver que redirecciona
 $(document).on("click", "#btnVolver", function () {
-    if (typeof VOLVER !== 'undefined' && VOLVER === "novedades") {
-        window.location.href = "novedades.html";
-    }else if (typeof VOLVER !== 'undefined' && VOLVER === "post") {
-        const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(window.location.search);
+    const volver = urlParams.get("volver");
+    if (volver === "post") {
         const idPost = urlParams.get("idpost");
-        window.location.href = "localhost/latinadd/visorPost.html?post=" + idPost;
-    }else{
+        window.location.href = `visorPost.html?idpost=${idPost}`;
+    } else {
         window.location.href = "novedades.html";
     }
 });
 
-
 let RESPONDIENDO_A = null;
-
 
 $(document).on("click", ".btnResponder", function () {
     const nombre = $(this).data("nombre");
     const idComentario = $(this).data("id");
     RESPONDIENDO_A = idComentario;
-
     $("#comentarioFlotante").removeClass("d-none");
     $("#respondiendoA").removeClass("d-none");
     $("#nombreRespondiendo").text(nombre);
     $("#inputComentario").val("").focus();
 });
 
-$(document).on("click", "#cancelarRespuesta", function () {
+$("#cancelarRespuesta").click(function () {
     RESPONDIENDO_A = null;
     $("#respondiendoA").addClass("d-none");
 });
 
-$(document).on("click", "#btnEnviarComentario", function () {
+$("#btnEnviarComentario").click(function () {
     const texto = $("#inputComentario").val().trim();
     const idUsuario = localStorage.getItem("idUsuario");
     const token = localStorage.getItem("tokenUsuario");
@@ -276,38 +256,22 @@ $(document).on("click", "#btnEnviarComentario", function () {
         dataType: "json",
         success: function (response) {
             if (response.success) {
-                console.log("Comentario enviado");
-
-                // Limpiar campo y resetear estado
                 $("#inputComentario").val("");
                 $("#respondiendoA").addClass("d-none");
                 RESPONDIENDO_A = null;
-
-                // Recargar comentarios del post
                 cargarPost(numPost);
             } else {
                 alert(response.mensaje || "No se pudo enviar el comentario.");
             }
-        },
-        error: function (xhr, status, error) {
-            console.error("Error al enviar comentario:", error);
-            console.log(xhr.responseText);
         }
     });
 });
 
-
-//Funcionalidad del boton me gusta de los comentarios
 $(document).on("click", "#btnLikeComentario", function () {
     const idComentario = $(this).data("id");
     const idUsuario = localStorage.getItem("idUsuario");
     const token = localStorage.getItem("tokenUsuario");
     const $btn = $(this);
-
-    if (!idUsuario || !token) {
-        alert("Debes iniciar sesión.");
-        return;
-    }
 
     $.ajax({
         url: "API/post/likeComentario.php",
@@ -320,19 +284,8 @@ $(document).on("click", "#btnLikeComentario", function () {
         dataType: "json",
         success: function (response) {
             if (response.success) {
-                // Cambiar visualmente el botón
-                if (response.liked) {
-                    $btn.css("color", "#615DFA");
-                } else {
-                    $btn.css("color", "grey");
-                }
-            } else {
-                console.warn("Error:", response.mensaje);
+                $btn.css("color", response.liked ? "#615DFA" : "grey");
             }
-        },
-        error: function (xhr, status, error) {
-            console.error("Error al conectar con el servidor:", error);
-            console.log("Respuesta del servidor:", xhr.responseText);
         }
     });
 });
