@@ -630,3 +630,66 @@ button {
 #bloqueComentarios{
     margin-bottom: 150px;
 }
+
+.pulsador {
+    padding: 20px;
+    border-bottom: 1px solid #ccc;
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 12px;
+}
+
+#pulsador1, #pulsador2{
+    border-right: 1px solid #ccc;
+}
+
+/*Modal de las conevrsaciones*/
+.conversacion{
+    width: 90%;
+    background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px;
+}
+
+.ultimoMensaje{
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--text-color);
+    margin-top: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 30ch;
+}
+
+.contenidoMensajes{
+    padding-top: 100px;
+}
+
+.tituloMensajes{
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 16px;
+    color: var(--text-color);
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#modalConversacion {
+    z-index: 9999;
+    background-color: white;
+}
+
+#modalConversacion .form-control {
+    font-size: 0.95rem;
+}

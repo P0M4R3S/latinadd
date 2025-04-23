@@ -24,6 +24,7 @@ $result_participantes = $stmt_participantes->get_result();
 $participantes = [];
 while ($row = $result_participantes->fetch_assoc()) {
     $participantes[$row['id']] = [
+        'id_usuario' => $row['id'],
         'nombre' => $row['nombre'],
         'apellidos' => $row['apellidos'],
         'imagen' => $row['foto']
