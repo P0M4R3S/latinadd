@@ -42,12 +42,13 @@ button {
 
 /* Defining colors */
 :root {
-    --primary-color: #615DFA;
-    --secondary-color: #4E4AC8;
+    --primary-color: #2ecc71;
+    --secondary-color: #27ae60;
     --accent-color: #e74c3c;
     --background-color: #F4F3F8;
     --text-color: #2c3e50;
 }
+
 
 body{
     background-color: var(--primary-color);
@@ -132,6 +133,14 @@ body{
 }
 
 #btnCrop{
-    margin-left: auto;
-    margin-right: auto;
+    display: block;
+    margin: 0 auto;
+    background-color: var(--secondary-color);
+    border: 2px solid white;
+    color: white;  
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 16px;
 }

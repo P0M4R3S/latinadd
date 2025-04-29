@@ -75,6 +75,20 @@
                 <div class="col-5 creador">
                     <img src="img/creador.png" alt="">
                 </div>
+                <div class="row pt-5 mb-4">
+                    <span id="textoDescripcion" class="texto"></span>
+                    <textarea id="inputDescripcion" class="selPais" style="width: 90%; " rows="8" maxlength="300" placeholder="Escribe una breve descripción sobre ti..."></textarea>
+                </div>
+                <div class="row mt-5 justify-content-center">
+                    <button id="btnDescripcion" class="btnComenzar">Continuar</button>
+                </div>
+            </div>
+        </div>
+        <div class="bloque" id="bloque4">
+            <div class="row pt-5 justify-content-end">
+                <div class="col-5 creador">
+                    <img src="img/creador.png" alt="">
+                </div>
                 <div class="row pt-5 mb-2">
                     <span id="texto5" class="texto"></span>
                     <div class="imagen" id="imagen">
@@ -100,12 +114,14 @@
 
     <script>
         $(document).ready(function () {
+            let descripcion;
             $("#btnComenzar").hide();
             $("#btnPais").hide();
             $("#selPais").hide();
             $("#fecha").hide();
             $("#bloque2").hide();
             $("#bloque3").hide();
+            $("#bloque4").hide();
             $("#btnFin").hide();
             $("#btnImagen").hide();
             // Configuración del primer texto
@@ -186,6 +202,12 @@
                         });
             });
 
+            $("#btnDescripcion").click(function () {
+                descripcion = $("#inputDescripcion").val();
+                $("#bloque3").hide();
+                $("#bloque4").fadeIn(200);
+            });
+
 
             $("#btnImagen").click(function () {
                 $("#imageUpload").click();
@@ -256,6 +278,7 @@
     formData.append("fecha", fecha);
     formData.append("ciudad", ""); // De momento ciudad vacía
     formData.append("foto", fotoBlob, "foto.png");
+    formData.append("descripcion", descripcion);
 
     fetch("API/usuarios/registroGuia.php", {
         method: "POST",

@@ -58,7 +58,7 @@
             </div>
             <div class="col pulsador" id="pulsador2">
                 <div class="pulsador-content">
-                    <span>Seguidos</span>
+                    <span>Amigos</span>
                 </div>
             </div>
             <div class="col pulsador" id="pulsador3">
@@ -68,7 +68,7 @@
             </div>
         </div>
         
-        <div class="listaGrupos">
+        <div class="listaAmigos" style="padding-bottom: 200px;">
 
         </div>
     </div>
@@ -195,7 +195,7 @@
     <script src="js/modalCompartir.js"></script>
     <script src="js/modalMensajes.js"></script>
     <script src="js/modalOpcionesPost.js"></script>
-    <script src="js/paginas.js"></script>
+    <script src="js/amigos.js"></script>
     <script>
         $(document).ready(function(){
             $("#modalCompartir").hide();
@@ -223,7 +223,7 @@
                             localStorage.removeItem("tokenUsuario");
                             window.location.href = 'index.html';
                         }else{
-                            cargarPerfil(() => cargarPaginas());
+                            cargarPerfil(() => cargarAmigos());
                         }
                     },
                     error: function(xhr, status, error) {

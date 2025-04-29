@@ -66,7 +66,7 @@ function imprimirPosts(posts) {
             const textoOriginal = compartido.texto || '';
             const tiempoOriginal = calcularTiempo(compartido.fecha);
             const imagenCompartida = (compartido.imagenes && compartido.imagenes.length > 0) ? compartido.imagenes[0] : null;
-            let colorLike = compartido.liked ? "#615DFA" : "lightgrey"; // Color del icono de like
+            let colorLike = compartido.liked ? "#2ecc71" : "lightgrey"; // Color del icono de like
             html += `
             <div class="container-fluid post" data-id="${post.id}">
                 <div class="row perfilPost">
@@ -110,10 +110,10 @@ function imprimirPosts(posts) {
                 <div class="row perfilPost">
                     <div class="col-6">
                         <img src="img/reaction/reacciones.png" alt="">
-                        <span class="textareaPost">+${compartido.likes}</span>
+                        <span class="textareaPost abrirPost" data-id="${post.id}">+${compartido.likes}</span>
                     </div>
                     <div class="col-6">
-                        <span class="textareaPost">${compartido.comentarios} comentarios</span>
+                        <span class="textareaPost numComentarios" data-id="${post.id}">${compartido.comentarios} comentarios</span>
                     </div>
                 </div>
                 <div class="row mt-3 d-flex justify-content-around">
@@ -135,7 +135,7 @@ function imprimirPosts(posts) {
             const fotoPerfil = post.usuario_foto || "img/default.jpg";
             const texto = post.texto || '';
             const imagen = (post.imagenes && post.imagenes.length > 0) ? post.imagenes[0] : null;
-            let colorLike = post.liked ? "#615DFA" : "lightgrey"; // Color del icono de like
+            let colorLike = post.liked ? "#2ecc71" : "lightgrey"; // Color del icono de like
             html += `
             <div class="container-fluid post" data-id="${post.id}" data-tipo="${post.tipo}">
                 <div class="row perfilPost">
@@ -167,10 +167,10 @@ function imprimirPosts(posts) {
                 <div class="row perfilPost">
                     <div class="col-6">
                         <img src="img/reaction/reacciones.png" alt="">
-                        <span class="textareaPost likesNum" data-id="${post.id}" data-tipo="${post.tipo}">+${likes}</span>
+                        <span class="textareaPost likesNum abrirPost" data-id="${post.id}" data-tipo="${post.tipo}">+${likes}</span>
                     </div>
                     <div class="col-6">
-                        <span class="textareaPost">${comentarios} comentarios</span>
+                        <span class="textareaPost numComentarios" data-id="${post.id}">${comentarios} comentarios</span>
                     </div>
                 </div>
                 <div class="row mt-3 d-flex justify-content-around">
@@ -223,6 +223,12 @@ $(document).on("click", ".abrirPost", function () {
     window.location.href = `visorPost.html?idpost=${id}&volver=novedades`;
 });
 
+//Funcionalidad del boton de numero de comentarios
+$(document).on("click", ".numComentarios", function () {
+    const id = $(this).data("id");
+    window.location.href = `visorPost.html?idpost=${id}&volver=novedades`;
+});
+
 //Funcionalidad del boton compartir asociado al post
 $(document).on("click", "#btnCompartir", function () {
     const id = $(this).data("id");
@@ -269,7 +275,7 @@ $(document).on("click", ".btnLike", function () {
 
                 // Cambiar color del icono
                 const $icono = $(`.btnLike[data-id='${postId}'] svg`);
-                $icono.attr("fill", response.liked ? "#615DFA" : "lightgrey");
+                $icono.attr("fill", response.liked ? "#2ecc71" : "lightgrey");
             } else {
                 console.warn("Error al procesar el like:", response.mensaje);
             }

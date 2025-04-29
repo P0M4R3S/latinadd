@@ -139,8 +139,7 @@ function crearComentarioHTML(com, esRespuesta = false) {
     const tiempo = calcularTiempo(com.fecha);
     const margen = esRespuesta ? `<div class="col-1"></div><div class="col-11">` : '';
     const cierre = esRespuesta ? `</div>` : '';
-    const colorLike = com.liked ? "#615DFA" : "grey";
-
+    const colorLike = com.liked ? "#2ecc71" : "grey";
     return `
     <div class="row mb-4">
         ${margen}
@@ -149,7 +148,7 @@ function crearComentarioHTML(com, esRespuesta = false) {
                     <img class="imgPost" src="${foto}" alt="">
                 </div>
                 <div class="col-10 globoComentario">
-                    <span class="nombreComentario">${nombre}</span><br>
+                    <span class="nombreComentario" data-id="${com.idusuario}">${nombre}</span><br>
                     <span class="textoComentario">${texto}</span>
                 </div>
             </div>
@@ -183,17 +182,22 @@ $(document).on("click", ".btnLike", function () {
                 let actual = parseInt($contador.text().replace("+", "")) || 0;
                 $contador.text(response.liked ? `+${actual + 1}` : `+${actual - 1}`);
                 const $icono = $(".btnLike svg");
-                $icono.attr("fill", response.liked ? "#615DFA" : "lightgrey");
+                $icono.attr("fill", response.liked ? "#2ecc71" : "lightgrey");
             }
         }
     });
+});
+
+$(document).on("click", ".nombreComentario", function () {
+    const idCom = $(this).data("id");
+    window.location.href = "visorPerfil.html?id=" + idCom + "&volver=post";
 });
 
 $("#nombrePost").click(function () {
     if (tipoAutorPost === "pagina") {
         window.location.href = "visorPagina.html?id=" + idUsuarioPost + "&volver=post";
     } else {
-        window.location.href = "visorPerfil.html?usuario=" + idUsuarioPost + "&volver=post";
+        window.location.href = "visorPerfil.html?id=" + idUsuarioPost + "&volver=post";
     }
 });
 
@@ -284,7 +288,7 @@ $(document).on("click", "#btnLikeComentario", function () {
         dataType: "json",
         success: function (response) {
             if (response.success) {
-                $btn.css("color", response.liked ? "#615DFA" : "grey");
+                $btn.css("color", response.liked ? "#2ecc71" : "grey");
             }
         }
     });

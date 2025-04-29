@@ -454,3 +454,6 @@ $(document).on("click", "#btnConfig", function () {
     const usuario = $(this).data("usuario");
     activarModalOpcionesPost(id, usuario);
 });
+
+
+

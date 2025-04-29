@@ -1,4 +1,5 @@
 <?php
+
 require_once '../conectar.php';
 require_once '../funciones.php';
 

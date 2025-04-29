@@ -38,12 +38,13 @@ button {
 
 /* Defining colors */
 :root {
-    --primary-color: #615DFA;
-    --secondary-color: #4E4AC8;
+    --primary-color: #2ecc71;
+    --secondary-color: #27ae60;
     --accent-color: #e74c3c;
     --background-color: #F4F3F8;
     --text-color: #2c3e50;
 }
+
 
 body{
     background-color: var(--background-color);

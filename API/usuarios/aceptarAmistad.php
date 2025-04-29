@@ -4,10 +4,9 @@ require_once '../funciones.php';
 
 header('Content-Type: application/json');
 
-$id = $_POST['id'] ?? '';
-$token = $_POST['token'] ?? '';
-$idpeticion = $_POST['idpeticion'] ?? '';
-$respuesta = $_POST['respuesta'] ?? ''; // 1 = aceptar, otro = rechazar
+$id       = $_POST['id'] ?? '';
+$token    = $_POST['token'] ?? '';
+$idusuario = $_POST['idusuario'] ?? ''; // Este es el otro usuario, no la solicitud
 
 // Verificar autenticación
 if (!validarSesion($id, $token)) {
@@ -15,32 +14,35 @@ if (!validarSesion($id, $token)) {
     exit;
 }
 
-// Verificar que la solicitud exista y que el usuario sea el receptor
-$sql = "SELECT id, solicitante, solicitado FROM peticionesamistad WHERE id = ? AND solicitado = ?";
+// Verificar que existe una solicitud donde el usuario actual sea el solicitado
+$sql = "SELECT id FROM peticionesamistad 
+        WHERE solicitante = ? AND solicitado = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ii", $idpeticion, $id);
+$stmt->bind_param("ii", $idusuario, $id);
 $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
-    echo json_encode(['success' => false, 'mensaje' => 'No se encontró la petición de amistad.']);
+    echo json_encode(['success' => false, 'mensaje' => 'No se encontró la solicitud de amistad.']);
     exit;
 }
 
-$row = $result->fetch_assoc();
-$usuario1 = $row['solicitante'];
-$usuario2 = $row['solicitado'];
+$idpeticion = $result->fetch_assoc()['id'];
 
-// Si la respuesta es 1 (aceptar), se inserta la amistad
-if ($respuesta == 1) {
-    $sql_insert = "INSERT INTO amigos (usuario1, usuario2) VALUES (?, ?)";
-    $stmt_insert = $conn->prepare($sql_insert);
-    $stmt_insert->bind_param("ii", $usuario1, $usuario2);
-    $stmt_insert->execute();
-    $stmt_insert->close();
+// Insertar amistad (ordenando IDs para evitar duplicados)
+$u1 = min($id, $idusuario);
+$u2 = max($id, $idusuario);
+
+$sql_insert = "INSERT INTO amigos (usuario1, usuario2) VALUES (?, ?)";
+$stmt_insert = $conn->prepare($sql_insert);
+$stmt_insert->bind_param("ii", $u1, $u2);
+if (!$stmt_insert->execute()) {
+    echo json_encode(['success' => false, 'mensaje' => 'Error al insertar amistad.']);
+    exit;
 }
+$stmt_insert->close();
 
-// Eliminar la solicitud
+// Eliminar solicitud de amistad
 $sql_delete = "DELETE FROM peticionesamistad WHERE id = ?";
 $stmt_delete = $conn->prepare($sql_delete);
 $stmt_delete->bind_param("i", $idpeticion);
@@ -49,7 +51,7 @@ $stmt_delete->close();
 
 echo json_encode([
     'success' => true,
-    'mensaje' => $respuesta == 1 ? 'Amistad aceptada.' : 'Solicitud rechazada.'
+    'mensaje' => 'Amistad aceptada.'
 ]);
 
 $stmt->close();

@@ -4,79 +4,66 @@ require_once '../funciones.php';
 
 header('Content-Type: application/json');
 
-// Obtener los datos enviados mediante POST
 $id = $_POST['id'] ?? '';
 $token = $_POST['token'] ?? '';
 $pais = $_POST['pais'] ?? '';
 $fecha = $_POST['fecha'] ?? '';
 $ciudad = $_POST['ciudad'] ?? '';
+$descripcion = $_POST['descripcion'] ?? ''; // <-- añadido aquí
 
-// Verificar que la sesión es válida
+// Verificar sesión
 if (!validarSesion($id, $token)) {
-    echo json_encode([
-        'success' => false,
-        'mensaje' => 'Sesión no válida.'
-    ]);
+    echo json_encode(['success' => false, 'mensaje' => 'Sesión no válida.']);
     exit;
 }
 
-// Manejo de la imagen (si se ha subido)
+// Procesar imagen (si viene)
 $rutaImagen = null;
 if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
-    $directorioSubida = "../../imagenes/";
-    if (!is_dir($directorioSubida)) {
-        mkdir($directorioSubida, 0777, true);
+    $directorio = "../../imagenes/usuarios/";
+    if (!is_dir($directorio)) {
+        mkdir($directorio, 0777, true);
     }
 
-    $extension = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
-    $nombreImagen = uniqid("img_", true) . "." . $extension;
-    $rutaCompleta = $directorioSubida . $nombreImagen;
+    $ext = strtolower(pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION));
+    $nombreArchivo = "img_" . uniqid() . "." . $ext;
+    $rutaCompleta = $directorio . $nombreArchivo;
 
     if (!move_uploaded_file($_FILES['foto']['tmp_name'], $rutaCompleta)) {
-        echo json_encode([
-            'success' => false,
-            'mensaje' => 'Error al subir la imagen.'
-        ]);
+        echo json_encode(['success' => false, 'mensaje' => 'Error al subir la imagen.']);
         exit;
     }
 
-    // Ruta que se guardará en la base de datos (relativa)
-    $rutaImagen = 'imagenes/' . $nombreImagen;
+    $rutaImagen = "imagenes/usuarios/" . $nombreArchivo;
 }
 
-// Armar y ejecutar la query de actualización
-$sql_update = "UPDATE usuarios SET pais = ?, nacimiento = ?, ciudad = ?, primera = FALSE";
+// Construir SQL
+$sql = "UPDATE usuarios SET pais = ?, nacimiento = ?, ciudad = ?, descripcion = ?, primera = FALSE";
 if ($rutaImagen) {
-    $sql_update .= ", foto = ?";
+    $sql .= ", foto = ?";
 }
-$sql_update .= " WHERE id = ?";
+$sql .= " WHERE id = ?";
 
-$stmt = $conn->prepare($sql_update);
-
+$stmt = $conn->prepare($sql);
 if ($rutaImagen) {
-    $stmt->bind_param("ssssi", $pais, $fecha, $ciudad, $rutaImagen, $id);
+    $stmt->bind_param("sssssi", $pais, $fecha, $ciudad, $descripcion, $rutaImagen, $id);
 } else {
-    $stmt->bind_param("sssi", $pais, $fecha, $ciudad, $id);
+    $stmt->bind_param("ssssi", $pais, $fecha, $ciudad, $descripcion, $id);
 }
 
 if (!$stmt->execute()) {
-    echo json_encode([
-        'success' => false,
-        'mensaje' => 'Error al actualizar los datos.'
-    ]);
+    echo json_encode(['success' => false, 'mensaje' => 'Error al guardar los datos.']);
     exit;
 }
 $stmt->close();
 
-// Inicializar todas las palabras clave en interesusuario con puntuación 0
-$sql = "INSERT IGNORE INTO interesusuario (usuario, palabra_id, puntuacion) 
-        SELECT ?, id, 0 FROM palabrasclave";
+// Insertar palabras clave con puntuación 0
+$sql = "INSERT IGNORE INTO interesusuario (usuario, palabra_id, puntuacion) SELECT ?, id, 0 FROM palabrasclave";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $stmt->close();
 
-// Respuesta final
 echo json_encode([
     'success' => true,
     'mensaje' => 'Datos actualizados correctamente.',
