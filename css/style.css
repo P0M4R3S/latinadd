@@ -648,10 +648,34 @@ button {
 /*Modal de las conevrsaciones*/
 .conversacion{
     width: 90%;
-    background-color: white;
+    background-color: rgba(45, 165, 45, 0.082);
     margin-left: auto;
     margin-right: auto;
     padding: 10px;
+    border-radius: 20px;
+}
+
+.nombreConversacion{
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--text-color);
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tiempoConversacion{
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 10px;
+    color: grey;
+    margin-top: 10px;
 }
 
 .ultimoMensaje{
@@ -693,3 +717,31 @@ button {
 #modalConversacion .form-control {
     font-size: 0.95rem;
 }
+
+#contenidoConversacion{
+    background-color: var(--background-color);
+}
+
+#mensaje{
+    background-color: white;
+    border-radius: 15px;
+}
+
+
+/*Modal del nuevo mensaje*/
+.bloqueNuevoMensaje{
+    width: 90%;
+    max-width: 400px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 7px;
+}
+
+.botonesMensaje {
+    display: flex;
+    justify-content: flex-end; /* opcional: alinea a la derecha */
+    gap: 10px; /* espacio entre botones */
+    margin-top: 5px;
+  }
+  

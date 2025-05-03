@@ -95,3 +95,4 @@ function eliminarPost(idPost) {
         const urlPost = `localhost/latinadd/visorPost.html&post=${idPost}`;
         navigator.clipboard.writeText(urlPost);
     }
+

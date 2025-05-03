@@ -288,7 +288,15 @@
          </div>
 
          <!-- Modal para enviar mensaje -->
-        
+         <div class="modalCompartir d-none" id="modalNuevoMensaje">
+            <div class="bloqueNuevoMensaje" style="background-color: lightgrey;">
+                <textarea class="textareaPost" id="textAreaNMensaje" style="padding: 3px;" rows="4" placeholder="Nuevo mensaje..."></textarea>
+                <div class="botonesMensaje">
+                    <div class="btnPost" id="btnNuevoMensaje">Enviar</div>
+                    <div class="btnPost btnCancelarMensaje">Cancelar</div>
+                  </div>
+            </div>
+         </div>
   
 
     <!--Sources de JS-->
@@ -305,9 +313,11 @@
             $("#modalCompartir").hide();
             $("#modalMensaje").hide();
             $("#modalConfPost").hide();
+            $("#modalNuevoMensaje").hide();
             $("#modalCompartir").removeClass("d-none");
             $("#modalMensaje").removeClass("d-none");
             $("#modalConfPost").removeClass("d-none");
+            $("#modalNuevoMensaje").removeClass("d-none");
               //Control de localStorage
             let idUsuario = localStorage.getItem("idUsuario");
             let tokenUsuario = localStorage.getItem("tokenUsuario");

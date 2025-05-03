@@ -103,7 +103,7 @@ function cargarMensajes(id, scrollFinal = true) {
             const mensajesHtml = res.mensajes.map(m => {
                 const clase = m.emisor == idUsuario ? 'text-end text-primary' : 'text-start text-dark';
                 return `<div class="${clase} mb-2">
-                            <span class="px-3 py-2 border rounded d-inline-block">${m.mensaje}</span>
+                            <span id="mensaje" class="px-3 py-2 border d-inline-block">${m.mensaje}</span>
                         </div>`;
             }).join("");
 
@@ -141,7 +141,7 @@ $("#btnEnviarMensaje").click(() => {
             // Crear HTML del nuevo mensaje
             const htmlMensaje = `
                 <div class="text-end text-primary mb-2">
-                    <span class="px-3 py-2 border rounded d-inline-block">${mensaje}</span>
+                    <span id="mensaje" class="px-3 py-2 border  d-inline-block">${mensaje}</span>
                 </div>`;
 
             // Agregar el mensaje al final del contenedor

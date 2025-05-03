@@ -457,3 +457,53 @@ $(document).on("click", "#btnConfig", function () {
 
 
 
+// Enviar mensaje directo desde el modal
+$(document).on("click", "#btnNuevoMensaje", function () {
+    const mensaje = $("#textAreaNMensaje").val().trim();
+    if (mensaje.length === 0) {
+        alert("Escribe un mensaje.");
+        return;
+    }
+
+    const idUsuario = localStorage.getItem("idUsuario");
+    const tokenUsuario = localStorage.getItem("tokenUsuario");
+
+    $.ajax({
+        url: "API/usuarios/mensajeDirecto.php",
+        type: "POST",
+        data: {
+            id: idUsuario,
+            token: tokenUsuario,
+            idreceptor: usuario,
+            texto: mensaje
+        },
+        dataType: "json",
+        success: function (response) {
+            if (response.success) {
+                cargarMensajeModal("Mensaje enviado correctamente.");
+                cerrarModalNuevoMensaje();
+            } else {
+                cargarMensajeModal("Error al enviar el mensaje");
+                cerrarModalNuevoMensaje();
+            }
+        },
+        error: function (xhr) {
+            console.error("Error de red:", xhr.responseText);
+            alert("No se pudo enviar el mensaje.");
+        }
+    });
+});
+
+
+$(document).on("click", ".btnCancelarMensaje", function () {
+    cerrarModalNuevoMensaje();
+});
+
+function cerrarModalNuevoMensaje() {
+    $("#modalNuevoMensaje").hide();
+    $("#textAreaNMensaje").val("");
+}
+
+$("#btnMensaje").click(function() {
+    $("#modalNuevoMensaje").fadeIn(150);
+});
