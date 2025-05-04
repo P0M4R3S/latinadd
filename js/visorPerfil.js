@@ -144,6 +144,19 @@ function enviarSolicitudAmistad(idUsuario) {
                 estadoAmistad = 5;
                 $("#btnAmigo").text("Cancelar solicitud");
                 console.log("Solicitud de amistad enviada.");
+
+                // Crear notificación (tipo 1)
+                $.post("API/notificaciones/crearNotificacion.php", {
+                    id: localStorage.getItem("idUsuario"),
+                    token: localStorage.getItem("tokenUsuario"),
+                    tipo: 1,
+                    receptor: idUsuario
+                }, function (res) {
+                    if (!res.success) {
+                        console.warn("No se pudo crear la notificación:", res.mensaje);
+                    }
+                }, "json");
+
             } else {
                 console.log("Error al enviar la solicitud de amistad: " + response.mensaje);
             }

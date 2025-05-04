@@ -3,16 +3,15 @@ let indicePaginas = 1;
 let cargandoPaginas = false;
 let finPaginas = false;
 
-    // Eventos de los botones
-    $("#pulsador1").click(() => cambiarFiltro("todos"));
-    $("#pulsador2").click(() => cambiarFiltro("seguidos"));
-    $("#pulsador3").click(() => cambiarFiltro("sugerencias"));
+$("#pulsador1").click(() => cambiarFiltro("todos"));
+$("#pulsador2").click(() => cambiarFiltro("seguidos"));
+$("#pulsador3").click(() => cambiarFiltro("sugerencias"));
 
-    $(window).scroll(() => {
-        if (!cargandoPaginas && !finPaginas && $(window).scrollTop() + $(window).height() > $(document).height() - 200) {
-            cargarPaginas();
-        }
-    });
+$(window).scroll(() => {
+    if (!cargandoPaginas && !finPaginas && $(window).scrollTop() + $(window).height() > $(document).height() - 200) {
+        cargarPaginas();
+    }
+});
 
 function cambiarFiltro(nuevoFiltro) {
     filtro = nuevoFiltro;
@@ -59,28 +58,38 @@ function renderizarPagina(pagina) {
         <div class="container-fluid postPerfil mt-3 border rounded p-3 bg-light">
             <div class="row align-items-center">
                 <div class="col-3">
-                    <img class="img-fluid rounded" src="${imagen}" alt="Imagen de la página">
+                    <img class="img-fluid rounded imgPagina" data-id="${pagina.id}" src="${imagen}" alt="Imagen de la página" style="cursor:pointer;">
                 </div>
                 <div class="col-6">
-                    <span class="nombrePost h5">${pagina.nombre}</span>
+                    <span class="nombrePost h5 nombrePagina" data-id="${pagina.id}" style="cursor:pointer;">${pagina.nombre}</span>
                 </div>
                 <div class="col-3 text-end">
-                    <button class="btn btn-sm btn-outline-primary btnSeguir" data-id="${pagina.id}" data-seguida="${pagina.seguida}">
+                    <button class="btn btn-sm btnAgregarAmigo btnSeguir" 
+                        data-id="${pagina.id}" 
+                        data-seguida="${pagina.seguida ? 1 : 0}">
                         ${seguirTexto}
                     </button>
                 </div>
             </div>
         </div>`;
-    
+
     $(".listaGrupos").append(html);
 }
 
-// Evento para seguir/dejar de seguir páginas
+// Redirección al hacer clic en imagen o nombre
+$(document).on("click", ".imgPagina, .nombrePagina", function () {
+    const id = $(this).data("id");
+    window.location.href = `visorPagina.html?id=${id}&volver=paginas`;
+});
+
+// Seguir o dejar de seguir
 $(document).on("click", ".btnSeguir", function () {
-    const idpagina = $(this).data("id");
-    const seguida = $(this).data("seguida");
-    const url = seguida ? "API/paginas/dejarSeguirPagina.php" : "API/paginas/seguirPagina.php";
     const $btn = $(this);
+    const idpagina = $btn.data("id");
+    const seguida = $btn.data("seguida") == 1;
+    const url = seguida ? "API/paginas/dejarSeguirPagina.php" : "API/paginas/seguirPagina.php";
+
+    $btn.prop("disabled", true);
 
     $.post(url, {
         id: localStorage.getItem("idUsuario"),
@@ -88,10 +97,13 @@ $(document).on("click", ".btnSeguir", function () {
         idpagina: idpagina
     }, function (res) {
         if (res.success) {
-            $btn.text(seguida ? "Seguir +" : "Dejar de seguir");
-            $btn.data("seguida", !seguida);
+            const nuevaSeguida = !seguida;
+            $btn.text(nuevaSeguida ? "Dejar de seguir" : "Seguir +");
+            $btn.data("seguida", nuevaSeguida ? 1 : 0);
         } else {
-            console.log("No se pudo actualizar el seguimiento.");
+            console.warn("No se pudo actualizar el seguimiento.");
         }
-    }, 'json');
+    }, 'json').always(() => {
+        $btn.prop("disabled", false);
+    });
 });

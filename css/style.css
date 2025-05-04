@@ -426,11 +426,15 @@ button {
     background-color: var(--background-color);
 }
 
-.bannerSuperior{
+.bannerSuperior {
     border-radius: 10px 10px 0px 0px;
     height: 70px;
-    background-image: url(../img/fondo.jpg);
+    background-image: url(../img/banner2.png);
+    background-size: cover;         /* Ajusta la imagen al contenedor */
+    background-position: center;    /* Centra la imagen */
+    background-repeat: no-repeat;   /* Evita repeticiones */
 }
+
 
 .bannerSuperior img{
     border: 8px solid white;
@@ -745,3 +749,67 @@ button {
     margin-top: 5px;
   }
   
+  /*Estilos para botones de amigos*/
+  .btnAgregarAmigo{
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 10px;
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 10px;
+    margin-top: 10px;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .btnEliminarAmigo{
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: 10px;
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 10px;
+    margin-top: 10px;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .btnCancelarSolicitud{
+    background-color: var(--text-color);
+    color: var(--background-color);
+    border-radius: 10px;
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 10px;
+    margin-top: 10px;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .btnAceptarSolicitud{
+    background-color: var(--text-color);
+    color: var(--background-color);
+    border-radius: 10px;
+    font-family: "Orbitron", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 10px;
+    margin-top: 10px;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  /*Boton de notificaciones*/
+  .puntoRojo {
+    position: absolute;
+    top: 2px;
+    left: 12px;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+    z-index: 10;
+}

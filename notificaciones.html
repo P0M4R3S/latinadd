@@ -54,31 +54,6 @@
         </div>
     </div>
 
-    <!--Contenido------------------------------------------------------------------>
-    <div class="container-fluid contenido mb-5 pt-5">
-        <div class="row text-center mt-5">
-            <div class="col pulsador" id="pulsador1">
-                <div class="pulsador-content">
-                    <span>Todos</span>
-                </div>
-            </div>
-            <div class="col pulsador" id="pulsador2">
-                <div class="pulsador-content">
-                    <span>Seguidos</span>
-                </div>
-            </div>
-            <div class="col pulsador" id="pulsador3">
-                <div class="pulsador-content">
-                    <span>Sugerencias</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="listaGrupos">
-
-        </div>
-    </div>
-
     <!--Menu lateral--------------------------------------------------------------->
     <div class="container-fluid menuLateral">
         <div class="lateral">
@@ -162,6 +137,88 @@
         </div>
     </div>
 
+    
+
+    <!--Contenido------------------------------------------------------------------->
+    <div class="principal">
+        <!--Creador de nuevo post ---------------------------------------->
+        <br><br><br>
+        <div class="contenidoNotificaciones">
+
+        </div>
+        <!-- Modal para compartir post -->
+        <div class="modalCompartir d-none" id="modalCompartir">
+            <div class="bloqueCompartir">
+                <div class="container-fluid post">
+                    <div class="row compartirPost">
+                        <div class="col-2">
+                            <img class="imgPost" src="img/3.jpg" alt="">
+                        </div>
+                        <div class="col-10">
+                            <span class="nombrePost">Nombre de usuario</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <textarea class="textareaPost" id="textAreaCompartir" rows="4" placeholder="Haz un comentario..."></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class=" justify-content-end d-flex">
+                            <div class="btnPost me-1" id="btnCancelarCompartir">Cancelar</div>
+                            <div class="btnPost" id="btnCompartirPost">Compartir</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="post">
+                    <div class="row">
+                        <div class="col-10"><span class="nombrePost" id="vinculoCompartir">Vinculo del post a compartir</span></div>
+                        <div class="col-2" id="btnCopiarCompartir"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"/></svg></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para los mensajes -->
+         <div class="modalCompartir d-none" id="modalMensaje">
+            <div class="bloqueModalMensaje">
+                <span class="txtMensajeModal">Algo salió mal</span>
+                <div class="btnPost" id="btnAceptarMensaje">Aceptar</div>
+            </div>
+         </div>
+
+         <!-- Modal para la configuracion del post -->
+         <div class="modalCompartir d-none" id="modalConfPost">
+            <div class="bloqueModalPost">
+                <div class="modalPostPropio">
+                    <div class="cuadroModalPost" id="btnEliminarPost">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path d="M9 3h6v1h5v2H4V4h5V3zm-4 4h14v13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7zm5 2v9h2V9H10zm4 0v9h2V9h-2z"/>
+                          </svg>Eliminar el post
+                    </div>
+                    <div class="cuadroModalPost" id="btnCopiarPost">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"/></svg>Copiar enlace
+                    </div>
+                    <div class="btnPost btnCancelarConf">Cancelar</div>
+                </div>
+                <div class="modalPostOtro">
+                    <div class="cuadroModalPost btnCopiarPost" id="btnDenunciarPost">
+                        <svg width="20" height="20" viewBox="0 0 512 512" fill="currentColor">
+                            <path d="M256 48c-13.3 0-25.6 7.1-32.2 18.7L9.4 442.3C1.4 455.9 0 471.4 5.1 485.6S21.9 512 36.7 512H475.3c14.8 0 28.2-8.4 33.3-22.6s3.7-29.7-4.3-43.3L288.2 66.7C281.6 55.1 269.3 48 256 48zm0 96c13.3 0 24 10.7 24 24v112c0 13.3-10.7 24-24 24s-24-10.7-24-24V168c0-13.3 10.7-24 24-24zm0 232c17.7 0 32 14.3 32 32s-14.3 32-32 32s-32-14.3-32-32s14.3-32 32-32z"/>
+                          </svg>
+                        Denunciar el post
+                    </div>
+                    <div class="cuadroModalPost btnCopiarPost" id="btnCopiarPost">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"/></svg>Copiar enlace
+                    </div>
+                    <div class="btnPost btnCancelarConf">Cancelar</div>
+                </div>
+            </div>
+         </div>
+
+    </div>
+
+    
 
     <!--Sources de JS-->
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
@@ -170,8 +227,8 @@
     <script src="js/modalCompartir.js"></script>
     <script src="js/modalMensajes.js"></script>
     <script src="js/modalOpcionesPost.js"></script>
-    <script src="js/paginas.js"></script>
     <script src="js/notificaciones.js"></script>
+
     <script>
         $(document).ready(function(){
             $("#modalCompartir").hide();
@@ -180,10 +237,10 @@
             $("#modalCompartir").removeClass("d-none");
             $("#modalMensaje").removeClass("d-none");
             $("#modalConfPost").removeClass("d-none");
-            
-             //Control de localStorage
-             let idUsuario = localStorage.getItem("idUsuario");
+              //Control de localStorage
+            let idUsuario = localStorage.getItem("idUsuario");
             let tokenUsuario = localStorage.getItem("tokenUsuario");
+
             if (idUsuario && tokenUsuario) {
                 $.ajax({
                     url: 'API/usuarios/comprobarLocal.php',
@@ -199,7 +256,7 @@
                             localStorage.removeItem("tokenUsuario");
                             window.location.href = 'index.html';
                         }else{
-                            cargarPerfil(() => cargarPaginas());
+                            cargarPerfil(() => cargarNotificaciones());
                         }
                     },
                     error: function(xhr, status, error) {
@@ -213,19 +270,10 @@
                 window.location.href = 'index.html';
             }
 
-            //Funcionalidad del boton de cerrar sesion
-            $("#btnCerrarSesion").click(function() {
-                localStorage.removeItem("idUsuario");
-                localStorage.removeItem("tokenUsuario");
-                window.location.href = "index.html";
-            });
-
-            //Funcionalidad para mostrar el cargador 3 segundos
             setTimeout(function() {
-                $(".cargador").fadeOut(200);
+                $(".cargador").fadeOut(300);
             }, 500);
 
-            //Funcionalidad para mostrar el menú lateral
             $(".sandwich").click(function() {
                 $(".menuLateral").fadeIn(200);
                 $(".lateral").animate({ left: "0px" }, 300); 
@@ -237,7 +285,6 @@
                 });
             });
 
-            //Funciones de los botones del menú lateral
             $(".novedades").click(function() { window.location.href = "novedades.html"; });
             $(".grupos").click(function() { window.location.href = "paginas.html"; });
             $(".eventos").click(function() { window.location.href = "paginas.html"; });
@@ -249,6 +296,54 @@
             $(".configuracion").click(function() { window.location.href = "configuracion.html"; });
             $(".privacidad").click(function() { window.location.href = "privacidad.html"; });
             $(".notificaciones").click(function() { window.location.href = "notificaciones.html"; });
+
+            $(".btnImagen").click(function() {
+                $("#imageInput").click();
+            });
+
+            $("#imageInput").on("change", function (event) {
+                const files = event.target.files;
+                const previewContainer = $("#previewContainer");
+                previewContainer.empty();
+
+                if (files.length > 0) {
+                    Array.from(files).forEach((file, index) => {
+                        if (file.type.startsWith("image/")) {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                const img = $(`<img src="${e.target.result}" alt="Imagen ${index + 1}" class="previewImg">`);
+                                previewContainer.append(img);
+                            };
+                            reader.readAsDataURL(file);
+                        } else {
+                            alert(`El archivo ${file.name} no es una imagen.`);
+                        }
+                    });
+                }
+            });
+
+            $("#btnCerrarSesion").click(function() {
+                localStorage.removeItem("idUsuario");
+                localStorage.removeItem("tokenUsuario");
+                window.location.href = "index.html";
+            });
+
+            
+            $(window).on('scroll', function() {
+                if(scroll == true){
+                    // Detectar si está cerca del fondo de la página
+                    if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+                        if (!loading) {
+                            loading = true;
+                            cargarFeed();
+                        }
+                    }
+                }
+            });
+
+            $(document).on("click", "#btnNuevoPost", function () {
+                crearNuevoPost();
+            });
 
             //Control del buscador
             // Capturar click en la lupa
@@ -269,6 +364,8 @@
                     }
                 }
             });
+
+            marcarNotificacionesLeidas();
 
             /*Control de notificaciones y mensajes*/
             tieneNotificaciones().then(hay => {

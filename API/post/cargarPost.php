@@ -29,14 +29,49 @@ if ($result->num_rows === 0) {
 $post = $result->fetch_assoc();
 $stmt->close();
 
+$tipoPost = $post['tipo'];
+$autorPost = $post['usuario'];
+
+// Ajustar métricas si es post de página y el usuario que lo ve no es el autor
+if ($tipoPost == 2 && $id != $autorPost) {
+    $sql = "SELECT palabra_id FROM palabraspagina WHERE pagina_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $autorPost);
+    $stmt->execute();
+    $res = $stmt->get_result();
+
+    while ($pal = $res->fetch_assoc()) {
+        $palabra_id = $pal['palabra_id'];
+
+        // Intentar actualizar
+        $sqlUp = "UPDATE interesusuario SET puntuacion = puntuacion + 1, ultima_interaccion = NOW()
+                  WHERE usuario = ? AND palabra_id = ?";
+        $stmtUp = $conn->prepare($sqlUp);
+        $stmtUp->bind_param("ii", $id, $palabra_id);
+        $stmtUp->execute();
+
+        if ($stmtUp->affected_rows === 0) {
+            $sqlIns = "INSERT INTO interesusuario (usuario, palabra_id, puntuacion) VALUES (?, ?, 1)";
+            $stmtIns = $conn->prepare($sqlIns);
+            $stmtIns->bind_param("ii", $id, $palabra_id);
+            $stmtIns->execute();
+            $stmtIns->close();
+        }
+
+        $stmtUp->close();
+    }
+
+    $stmt->close();
+}
+
 // Obtener información del autor del post (usuario o página)
-if ($post['tipo'] == 2) { // post de página
+if ($tipoPost == 2) {
     $sql = "SELECT nombre, imagen AS foto FROM paginas WHERE id = ?";
 } else {
     $sql = "SELECT nombre, apellidos, foto FROM usuarios WHERE id = ?";
 }
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $post['usuario']);
+$stmt->bind_param("i", $autorPost);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -86,7 +121,6 @@ if ($post['tipo'] == 3 && !empty($post['idcompartido'])) {
         $compartido = $result->fetch_assoc();
         $stmt->close();
 
-        // Obtener info del autor del post compartido
         if ($compartido['tipo'] == 2) {
             $sql = "SELECT nombre, imagen AS foto FROM paginas WHERE id = ?";
         } else {
@@ -109,7 +143,7 @@ if ($post['tipo'] == 3 && !empty($post['idcompartido'])) {
         }
         $stmt->close();
 
-        // Cargar imágenes del post compartido
+        // Imágenes del post compartido
         $sql = "SELECT ruta FROM imagenes WHERE post_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $compartido['id']);

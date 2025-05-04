@@ -264,6 +264,19 @@ $("#btnEnviarComentario").click(function () {
                 $("#respondiendoA").addClass("d-none");
                 RESPONDIENDO_A = null;
                 cargarPost(numPost);
+
+                // Crear notificación de comentario en post propio (tipo 2)
+                $.post("API/notificaciones/crearNotificacion.php", {
+                    id: idUsuario,
+                    token: token,
+                    tipo: 2,
+                    post: numPost
+                }, function (resNotif) {
+                    if (!resNotif.success && resNotif.mensaje !== 'No se notifica al autor') {
+                        console.warn("Error creando notificación:", resNotif.mensaje);
+                    }
+                }, "json");
+
             } else {
                 alert(response.mensaje || "No se pudo enviar el comentario.");
             }

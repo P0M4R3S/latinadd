@@ -19,7 +19,7 @@ $offset = ($indice - 1) * $limite;
 
 switch ($filtro) {
     case 'amigos':
-        $sql = "SELECT u.id, u.nombre, u.foto, 'amigo' AS estado
+        $sql = "SELECT u.id, u.nombre, u.apellidos, u.foto, 'amigo' AS estado
                 FROM amigos a
                 JOIN usuarios u ON (u.id = a.usuario1 OR u.id = a.usuario2)
                 WHERE (a.usuario1 = ? OR a.usuario2 = ?)
@@ -35,7 +35,7 @@ switch ($filtro) {
         break;
 
     case 'sugerencias':
-        $sql = "SELECT u.id, u.nombre, u.foto,
+        $sql = "SELECT u.id, u.nombre, u.apellidos, u.foto,
                        CASE
                            WHEN p1.id IS NOT NULL THEN 'solicitado'
                            WHEN p2.id IS NOT NULL THEN 'recibido'
@@ -62,7 +62,7 @@ switch ($filtro) {
 
     case 'todos':
     default:
-        $sql = "SELECT u.id, u.nombre, u.foto,
+        $sql = "SELECT u.id, u.nombre, u.apellidos, u.foto,
                        CASE
                            WHEN a.usuario1 IS NOT NULL THEN 'amigo'
                            WHEN p1.id IS NOT NULL THEN 'solicitado'
@@ -99,7 +99,7 @@ $usuarios = [];
 while ($row = $result->fetch_assoc()) {
     $usuarios[] = [
         'id' => $row['id'],
-        'nombre' => $row['nombre'],
+        'nombre' => trim($row['nombre'] . ' ' . $row['apellidos']),
         'imagen' => $row['foto'] ?: 'img/default.png',
         'estado' => $row['estado']
     ];

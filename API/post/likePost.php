@@ -8,7 +8,7 @@ $conn->set_charset("utf8");
 // Datos
 $id = $_POST['id'] ?? '';
 $token = $_POST['token'] ?? '';
-$idpost = $_POST['idpost'] ?? '';
+$idpost = intval($_POST['idpost'] ?? 0);
 
 // Validar sesión
 if (!validarSesion($id, $token)) {
@@ -16,11 +16,11 @@ if (!validarSesion($id, $token)) {
     exit;
 }
 
-// Verificar que el post existe
-$sql = "SELECT id FROM posts WHERE id = ?";
+// Obtener autor del post
+$sql = "SELECT usuario FROM posts WHERE id = ?";
 $stmt = $conn->prepare($sql);
 if (!$stmt) {
-    echo json_encode(['success' => false, 'mensaje' => 'Error al preparar verificación de post: ' . $conn->error]);
+    echo json_encode(['success' => false, 'mensaje' => 'Error al preparar consulta: ' . $conn->error]);
     exit;
 }
 $stmt->bind_param("i", $idpost);
@@ -30,15 +30,13 @@ if ($result->num_rows === 0) {
     echo json_encode(['success' => false, 'mensaje' => 'El post no existe.']);
     exit;
 }
+$fila = $result->fetch_assoc();
+$autorPost = intval($fila['usuario']);
 $stmt->close();
 
-// Verificar si ya ha dado like
+// Verificar si ya dio like
 $sql = "SELECT id FROM likespost WHERE usuario = ? AND post = ?";
 $stmt = $conn->prepare($sql);
-if (!$stmt) {
-    echo json_encode(['success' => false, 'mensaje' => 'Error al preparar verificación de like: ' . $conn->error]);
-    exit;
-}
 $stmt->bind_param("ii", $id, $idpost);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -60,6 +58,7 @@ if ($yaLike) {
     $stmt->close();
 
     echo json_encode(['success' => true, 'liked' => false, 'mensaje' => 'Like eliminado.']);
+
 } else {
     // Agregar like
     $sql = "INSERT INTO likespost (usuario, post) VALUES (?, ?)";
@@ -74,37 +73,15 @@ if ($yaLike) {
     $stmt->execute();
     $stmt->close();
 
-    /*
-    // --- MÉTRICAS: si decides habilitar esta parte, asegúrate de que la tabla palabraspost existe ---
-    $sql = "SELECT palabra_id FROM palabraspost WHERE post_id = ?";
-    $stmt = $conn->prepare($sql);
-    if ($stmt) {
-        $stmt->bind_param("i", $idpost);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        while ($row = $result->fetch_assoc()) {
-            $palabra_id = $row['palabra_id'];
-
-            $sql_up = "UPDATE metricasusuario SET valor = valor + 1 WHERE usuario_id = ? AND palabra_id = ?";
-            $stmt_up = $conn->prepare($sql_up);
-            $stmt_up->bind_param("ii", $id, $palabra_id);
-            $stmt_up->execute();
-
-            if ($stmt_up->affected_rows === 0) {
-                $sql_insert = "INSERT INTO metricasusuario (usuario_id, palabra_id, valor) VALUES (?, ?, 1)";
-                $stmt_insert = $conn->prepare($sql_insert);
-                $stmt_insert->bind_param("ii", $id, $palabra_id);
-                $stmt_insert->execute();
-                $stmt_insert->close();
-            }
-
-            $stmt_up->close();
-        }
-
-        $stmt->close();
+    // Notificar si el post es de otro usuario
+    if ($autorPost !== intval($id)) {
+        $sqlNotif = "INSERT INTO notificaciones (usuario, tipo, mensaje, post, otroUsuario)
+                     VALUES (?, 5, NULL, ?, ?)";
+        $stmtNotif = $conn->prepare($sqlNotif);
+        $stmtNotif->bind_param("iii", $autorPost, $idpost, $id);
+        $stmtNotif->execute();
+        $stmtNotif->close();
     }
-    */
 
     echo json_encode(['success' => true, 'liked' => true, 'mensaje' => 'Like agregado.']);
 }
