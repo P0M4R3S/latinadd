@@ -14,9 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Configuración de la base de datos
 $host = 'localhost';
-$username = 'diegosanchez';
-$password = '260153';
-$dbname = 'latinadd';
+$username = 'username';
+$password = 'password';
+$dbname = 'redNetwork';
 
 // Crear la conexión con MySQL usando mysqli
 $conn = new mysqli($host, $username, $password, $dbname);
