@@ -1,6 +1,6 @@
 # 🌎 Latinadd
 
-Latinadd es una red social desarrollada desde cero con tecnologías web clásicas, pensada para ofrecer una experiencia personalizada y fluida desde dispositivos móviles o escritorio. El proyecto está diseñado como una plataforma de contenido para la comunidad latina, con énfasis en la creación de páginas temáticas, interacción social y un sistema inteligente de sugerencias.
+Latinadd (www.latinadd.com) es una red social desarrollada desde cero con tecnologías web clásicas, pensada para ofrecer una experiencia personalizada y fluida desde dispositivos móviles o escritorio. El proyecto está diseñado como una plataforma de contenido para la comunidad latina, con énfasis en la creación de páginas temáticas, interacción social y un sistema inteligente de sugerencias.
 
 Este repositorio forma parte de mi portfolio como desarrollador independiente. Latinadd demuestra mi capacidad para construir un sistema completo con backend personalizado, base de datos optimizada y frontend funcional.
 
