@@ -8,7 +8,7 @@ Este repositorio forma parte de mi portfolio como desarrollador independiente. L
 
 ## 🖼️ Vista previa
 
-![Portada](assets/portada.png)
+![Portada](Screenshot_20250518_153049.png)
 
 ---
 
